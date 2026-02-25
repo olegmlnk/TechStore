@@ -1,0 +1,7 @@
+@"
+  **/bin/
+  **/obj/
+  .dotnet/
+  _buildcheck/
+  build-diag.log
+  "@ | Set-Content .gitignore

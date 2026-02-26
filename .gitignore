@@ -1,7 +1,12 @@
-@"
-  **/bin/
-  **/obj/
-  .dotnet/
-  _buildcheck/
-  build-diag.log
-  "@ | Set-Content .gitignore
+# Build artifacts
+**/bin/
+**/obj/
+**/_buildcheck/
+_buildcheck/
+build-diag.log
+
+# Local tools
+.dotnet/
+
+# IDE metadata
+.idea/

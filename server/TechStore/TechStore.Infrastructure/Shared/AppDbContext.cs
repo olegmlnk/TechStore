@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 using TechStore.Core.Enums;
 using TechStore.Core.Models;
 
@@ -15,4 +16,15 @@ public class AppDbContext : DbContext
     public DbSet<Wishlist> Wishlists { get; set; }
     public DbSet<WishlistItem> WishlistItems { get; set; }
     
+}
+
+public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
+{
+    public AppDbContext CreateDbContext(string[] args)
+    {
+        var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
+        optionsBuilder.UseSqlServer("Server=.;Database=TechStoreDb;Trusted_Connection=True;TrustServerCertificate=True");
+
+        return new AppDbContext(optionsBuilder.Options);
+    }
 }

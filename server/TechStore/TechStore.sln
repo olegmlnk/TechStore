@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechStore.Core", "TechStore
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechStore.Infrastructure", "TechStore.Infrastructure\TechStore.Infrastructure.csproj", "{F37BB6DA-6C3A-41F6-BD2C-2891019499B0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechStore.Application", "TechStore.Application\TechStore.Application.csproj", "{6C00E205-4FA0-4F28-B4B5-68107BB09A44}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{F37BB6DA-6C3A-41F6-BD2C-2891019499B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F37BB6DA-6C3A-41F6-BD2C-2891019499B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F37BB6DA-6C3A-41F6-BD2C-2891019499B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C00E205-4FA0-4F28-B4B5-68107BB09A44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C00E205-4FA0-4F28-B4B5-68107BB09A44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C00E205-4FA0-4F28-B4B5-68107BB09A44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C00E205-4FA0-4F28-B4B5-68107BB09A44}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

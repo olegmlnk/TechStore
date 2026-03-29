@@ -1,0 +1,92 @@
+<div class="auth-page">
+  <div class="auth-container">
+    <div class="auth-glow"></div>
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="logo">
+          <span class="logo-icon">⚡</span>
+          <span class="logo-text">TechStore</span>
+        </div>
+        <h1>{{ isLogin() ? 'Welcome Back' : 'Create Account' }}</h1>
+        <p class="subtitle">{{ isLogin() ? 'Sign in to continue shopping' : 'Join us and explore the best tech' }}</p>
+      </div>
+
+      @if (error()) {
+        <div class="error-banner">
+          <span>⚠️</span> {{ error() }}
+        </div>
+      }
+
+      <form (ngSubmit)="submit()" class="auth-form">
+        @if (!isLogin()) {
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstName">First Name</label>
+              <input
+                type="text"
+                id="firstName"
+                [(ngModel)]="form.firstName"
+                name="firstName"
+                placeholder="John"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="lastName">Last Name</label>
+              <input
+                type="text"
+                id="lastName"
+                [(ngModel)]="form.lastName"
+                name="lastName"
+                placeholder="Doe"
+                required
+              />
+            </div>
+          </div>
+        }
+
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input
+            type="email"
+            id="email"
+            [(ngModel)]="form.email"
+            name="email"
+            placeholder="you@example.com"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            [(ngModel)]="form.password"
+            name="password"
+            placeholder="••••••••"
+            required
+            minlength="6"
+          />
+        </div>
+
+        <button type="submit" class="submit-btn" [disabled]="loading()">
+          @if (loading()) {
+            <span class="spinner"></span> Processing...
+          } @else {
+            {{ isLogin() ? 'Sign In' : 'Create Account' }}
+          }
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        <p>
+          {{ isLogin() ? "Don't have an account?" : 'Already have an account?' }}
+          <button type="button" class="toggle-btn" (click)="toggleMode()">
+            {{ isLogin() ? 'Sign Up' : 'Sign In' }}
+          </button>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

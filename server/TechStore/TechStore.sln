@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechStore.Infrastructure", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechStore.Application", "TechStore.Application\TechStore.Application.csproj", "{6C00E205-4FA0-4F28-B4B5-68107BB09A44}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechStore.Core", "TechStore.Core\TechStore.Core.csproj", "{5BFB7251-88D1-400E-9A71-DAFACF6D88FD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{6C00E205-4FA0-4F28-B4B5-68107BB09A44}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C00E205-4FA0-4F28-B4B5-68107BB09A44}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C00E205-4FA0-4F28-B4B5-68107BB09A44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BFB7251-88D1-400E-9A71-DAFACF6D88FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BFB7251-88D1-400E-9A71-DAFACF6D88FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BFB7251-88D1-400E-9A71-DAFACF6D88FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BFB7251-88D1-400E-9A71-DAFACF6D88FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

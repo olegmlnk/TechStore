@@ -7,17 +7,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentValidation" Version="12.1.1" />
+        <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.3" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0-rc.1.25451.107"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.3" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="10.0.3" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.3">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.3" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.3" />
-        <PackageReference Include="Scalar.AspNetCore" Version="2.12.46" />
         <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="10.1.4" />
         <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="10.1.4" />
         <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.1.4" />
@@ -25,7 +18,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Include="..\TechStore.Infrastructure\Shared\AppDbContext.cs" Link="Shared\AppDbContext.cs" />
+      <ProjectReference Include="..\TechStore.Application\TechStore.Application.csproj" />
+      <ProjectReference Include="..\TechStore.Infrastructure\TechStore.Infrastructure.csproj" />
+      <ProjectReference Include="..\TechStore.Core\TechStore.Core.csproj" />
     </ItemGroup>
 
 </Project>

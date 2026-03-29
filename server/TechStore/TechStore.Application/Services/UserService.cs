@@ -1,0 +1,57 @@
+using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
+using TechStore.Application.DTOs;
+using TechStore.Infrastructure.Shared;
+
+namespace TechStore.Application.Services;
+
+public class UserService
+{
+    private readonly AppDbContext _db;
+
+    public UserService(AppDbContext db)
+    {
+        _db = db;
+    }
+
+    public async Task<UserProfileDto?> GetProfileAsync(Guid userId)
+    {
+        var user = await _db.Users.FindAsync(userId);
+        if (user is null) return null;
+
+        return new UserProfileDto
+        {
+            Id = user.Id,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Email = user.Email,
+            CreatedAt = user.CreatedAt
+        };
+    }
+
+    public async Task<UserProfileDto?> UpdateProfileAsync(Guid userId, UpdateProfileRequest request)
+    {
+        var user = await _db.Users.FindAsync(userId);
+        if (user is null) return null;
+
+        user.FirstName = request.FirstName;
+        user.LastName = request.LastName;
+        user.UpdatedAt = DateTime.UtcNow;
+        await _db.SaveChangesAsync();
+
+        return new UserProfileDto
+        {
+            Id = user.Id,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Email = user.Email,
+            CreatedAt = user.CreatedAt
+        };
+    }
+
+    public static Guid? GetUserIdFromClaims(ClaimsPrincipal user)
+    {
+        var idClaim = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        return Guid.TryParse(idClaim, out var id) ? id : null;
+    }
+}

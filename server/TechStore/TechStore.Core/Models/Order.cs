@@ -1,10 +1,12 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace TechStore.API.Models;
+namespace TechStore.Core.Models;
 
 public class Order : BaseModel
 {
     public Guid UserId { get; set; }
+    public User User { get; set; } = null!;
+
     public ICollection<OrderItem> Items { get; set; } = new List<OrderItem>();
 
     [Range(typeof(decimal), "0", "79228162514264337593543950335")]

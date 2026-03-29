@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using TechStore.API.Enums;
+using TechStore.Core.Enums;
 
-namespace TechStore.API.Models;
+namespace TechStore.Core.Models;
 
 public class Product : BaseModel
 {
@@ -21,4 +21,7 @@ public class Product : BaseModel
     public int StockQuantity { get; set; }
 
     public Category Category { get; set; }
+
+    [MaxLength(500)]
+    public string ImageUrl { get; set; } = string.Empty;
 }

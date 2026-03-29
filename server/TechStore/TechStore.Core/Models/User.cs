@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace TechStore.API.Models;
+namespace TechStore.Core.Models;
 
 public class User : BaseModel
 {
@@ -19,4 +19,9 @@ public class User : BaseModel
 
     [Required]
     public string PasswordHash { get; set; } = string.Empty;
+
+    public ICollection<Address> Addresses { get; set; } = new List<Address>();
+    public ICollection<Order> Orders { get; set; } = new List<Order>();
+    public Cart? Cart { get; set; }
+    public Wishlist? Wishlist { get; set; }
 }

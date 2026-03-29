@@ -1,4 +1,4 @@
-namespace TechStore.API.Models;
+namespace TechStore.Core.Models;
 
 public abstract class BaseModel
 {

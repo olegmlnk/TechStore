@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace TechStore.Core.Models;
+namespace TechStore.API.Models;
 
 public class CartItem : BaseModel
 {

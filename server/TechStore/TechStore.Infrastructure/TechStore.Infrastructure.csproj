@@ -23,7 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\TechStore.Core\TechStore.Core.csproj" />
+      <ProjectReference Include="..\TechStore.API\TechStore.API.csproj" />
     </ItemGroup>
 
 </Project>

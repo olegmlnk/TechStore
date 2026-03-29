@@ -1,4 +1,4 @@
-namespace TechStore.Core.Models;
+namespace TechStore.API.Models;
 
 public class Wishlist : BaseModel
 {

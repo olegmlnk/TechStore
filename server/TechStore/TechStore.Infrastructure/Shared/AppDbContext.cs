@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
-using TechStore.Core.Enums;
-using TechStore.Core.Models;
+using TechStore.API.Enums;
+using TechStore.API.Models;
 
 namespace TechStore.Infrastructure.Shared;
 

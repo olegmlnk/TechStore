@@ -1,4 +1,4 @@
-namespace TechStore.Core.Enums;
+namespace TechStore.API.Enums;
 
 public enum Category
 {

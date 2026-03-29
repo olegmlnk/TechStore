@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using TechStore.Core.Enums;
+using TechStore.API.Enums;
 
-namespace TechStore.Core.Models;
+namespace TechStore.API.Models;
 
 public class Product : BaseModel
 {

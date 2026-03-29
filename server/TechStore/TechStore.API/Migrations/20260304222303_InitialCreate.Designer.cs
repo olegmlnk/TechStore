@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TechStore.Infrastructure.Shared;
 
 #nullable disable
 
-namespace TechStore.Core.Migrations
+namespace TechStore.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260304222303_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +25,7 @@ namespace TechStore.Core.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("TechStore.Core.Models.Order", b =>
+            modelBuilder.Entity("TechStore.API.Models.Order", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -51,7 +54,7 @@ namespace TechStore.Core.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("TechStore.Core.Models.OrderItem", b =>
+            modelBuilder.Entity("TechStore.API.Models.OrderItem", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -85,7 +88,7 @@ namespace TechStore.Core.Migrations
                     b.ToTable("OrderItems");
                 });
 
-            modelBuilder.Entity("TechStore.Core.Models.Product", b =>
+            modelBuilder.Entity("TechStore.API.Models.Product", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -132,7 +135,7 @@ namespace TechStore.Core.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("TechStore.Core.Models.User", b =>
+            modelBuilder.Entity("TechStore.API.Models.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -171,7 +174,7 @@ namespace TechStore.Core.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("TechStore.Core.Models.Wishlist", b =>
+            modelBuilder.Entity("TechStore.API.Models.Wishlist", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -194,7 +197,7 @@ namespace TechStore.Core.Migrations
                     b.ToTable("Wishlists");
                 });
 
-            modelBuilder.Entity("TechStore.Core.Models.WishlistItem", b =>
+            modelBuilder.Entity("TechStore.API.Models.WishlistItem", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -214,28 +217,28 @@ namespace TechStore.Core.Migrations
                     b.ToTable("WishlistItems");
                 });
 
-            modelBuilder.Entity("TechStore.Core.Models.OrderItem", b =>
+            modelBuilder.Entity("TechStore.API.Models.OrderItem", b =>
                 {
-                    b.HasOne("TechStore.Core.Models.Order", null)
+                    b.HasOne("TechStore.API.Models.Order", null)
                         .WithMany("Items")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TechStore.Core.Models.Product", b =>
+            modelBuilder.Entity("TechStore.API.Models.Product", b =>
                 {
-                    b.HasOne("TechStore.Core.Models.Wishlist", null)
+                    b.HasOne("TechStore.API.Models.Wishlist", null)
                         .WithMany("Products")
                         .HasForeignKey("WishlistId");
                 });
 
-            modelBuilder.Entity("TechStore.Core.Models.Order", b =>
+            modelBuilder.Entity("TechStore.API.Models.Order", b =>
                 {
                     b.Navigation("Items");
                 });
 
-            modelBuilder.Entity("TechStore.Core.Models.Wishlist", b =>
+            modelBuilder.Entity("TechStore.API.Models.Wishlist", b =>
                 {
                     b.Navigation("Products");
                 });

@@ -7,16 +7,16 @@ namespace TechStore.Application.Services;
 
 public class UserService
 {
-    private readonly AppDbContext _db;
+    private readonly AppDbContext _context;
 
-    public UserService(AppDbContext db)
+    public UserService(AppDbContext context)
     {
-        _db = db;
+        _context = context;
     }
 
     public async Task<UserProfileDto?> GetProfileAsync(Guid userId)
     {
-        var user = await _db.Users.FindAsync(userId);
+        var user = await _context.Users.FindAsync(userId);
         if (user is null) return null;
 
         return new UserProfileDto
@@ -31,15 +31,29 @@ public class UserService
 
     public async Task<UserProfileDto?> UpdateProfileAsync(Guid userId, UpdateProfileRequest request)
     {
-        var user = await _db.Users.FindAsync(userId);
+        var user = await _context.Users.FindAsync(userId);
         if (user is null) return null;
 
         user.FirstName = request.FirstName;
         user.LastName = request.LastName;
         user.UpdatedAt = DateTime.UtcNow;
-        await _db.SaveChangesAsync();
+        await _context.SaveChangesAsync();
 
         return new UserProfileDto
+        {
+            Id = user.Id,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Email = user.Email,
+            CreatedAt = user.CreatedAt
+        };
+    }
+
+    public async Task<UserProfileDto?> FindByUsernameAsync(string username)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync((u => u.FirstName == username));
+        
+        return new UserProfileDto()
         {
             Id = user.Id,
             FirstName = user.FirstName,

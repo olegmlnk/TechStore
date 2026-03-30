@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using TechStore.Application.DTOs;
 using TechStore.Infrastructure.Shared;
 
@@ -8,10 +9,12 @@ namespace TechStore.Application.Services;
 public class UserService
 {
     private readonly AppDbContext _db;
+    private readonly ILogger<UserService> _logger;
 
-    public UserService(AppDbContext db)
+    public UserService(AppDbContext db, ILogger<UserService> logger)
     {
         _db = db;
+        _logger = logger;
     }
 
     public async Task<UserProfileDto?> GetProfileAsync(Guid userId)
@@ -19,6 +22,7 @@ public class UserService
         var user = await _db.Users.FindAsync(userId);
         if (user is null) return null;
 
+        _logger.LogInformation("Getting profile for user {userId}", userId);
         return new UserProfileDto
         {
             Id = user.Id,
@@ -34,6 +38,7 @@ public class UserService
         var user = await _db.Users.FindAsync(userId);
         if (user is null) return null;
 
+        _logger.LogInformation("Updating profile for user {userId}", userId);
         user.FirstName = request.FirstName;
         user.LastName = request.LastName;
         user.UpdatedAt = DateTime.UtcNow;

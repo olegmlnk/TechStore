@@ -68,6 +68,8 @@ public class AppDbContext : DbContext
 
     private static void SeedProducts(ModelBuilder modelBuilder)
     {
+        var seedDate = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
         modelBuilder.Entity<Product>().HasData(
             new Product
             {
@@ -78,7 +80,9 @@ public class AppDbContext : DbContext
                 IsAvailable = true,
                 StockQuantity = 25,
                 Category = Category.Computers,
-                ImageUrl = "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600"
+                ImageUrl = "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600",
+                CreatedAt = seedDate,
+                UpdatedAt = seedDate
             },
             new Product
             {
@@ -89,7 +93,9 @@ public class AppDbContext : DbContext
                 IsAvailable = true,
                 StockQuantity = 50,
                 Category = Category.Phones,
-                ImageUrl = "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=600"
+                ImageUrl = "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=600",
+                CreatedAt = seedDate,
+                UpdatedAt = seedDate
             },
             new Product
             {
@@ -100,7 +106,9 @@ public class AppDbContext : DbContext
                 IsAvailable = true,
                 StockQuantity = 100,
                 Category = Category.Audio,
-                ImageUrl = "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600"
+                ImageUrl = "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600",
+                CreatedAt = seedDate,
+                UpdatedAt = seedDate
             },
             new Product
             {
@@ -111,7 +119,9 @@ public class AppDbContext : DbContext
                 IsAvailable = true,
                 StockQuantity = 15,
                 Category = Category.Gaming,
-                ImageUrl = "https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?w=600"
+                ImageUrl = "https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?w=600",
+                CreatedAt = seedDate,
+                UpdatedAt = seedDate
             },
             new Product
             {
@@ -122,7 +132,9 @@ public class AppDbContext : DbContext
                 IsAvailable = true,
                 StockQuantity = 40,
                 Category = Category.Wearables,
-                ImageUrl = "https://images.unsplash.com/photo-1546868871-af0de0ae72be?w=600"
+                ImageUrl = "https://images.unsplash.com/photo-1546868871-af0de0ae72be?w=600",
+                CreatedAt = seedDate,
+                UpdatedAt = seedDate
             },
             new Product
             {
@@ -133,7 +145,9 @@ public class AppDbContext : DbContext
                 IsAvailable = true,
                 StockQuantity = 200,
                 Category = Category.Peripherals,
-                ImageUrl = "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=600"
+                ImageUrl = "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=600",
+                CreatedAt = seedDate,
+                UpdatedAt = seedDate
             },
             new Product
             {
@@ -144,7 +158,9 @@ public class AppDbContext : DbContext
                 IsAvailable = true,
                 StockQuantity = 75,
                 Category = Category.Phones,
-                ImageUrl = "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=600"
+                ImageUrl = "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=600",
+                CreatedAt = seedDate,
+                UpdatedAt = seedDate
             },
             new Product
             {
@@ -155,7 +171,9 @@ public class AppDbContext : DbContext
                 IsAvailable = true,
                 StockQuantity = 10,
                 Category = Category.Peripherals,
-                ImageUrl = "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=600"
+                ImageUrl = "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=600",
+                CreatedAt = seedDate,
+                UpdatedAt = seedDate
             },
             new Product
             {
@@ -166,7 +184,9 @@ public class AppDbContext : DbContext
                 IsAvailable = true,
                 StockQuantity = 20,
                 Category = Category.Drones,
-                ImageUrl = "https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=600"
+                ImageUrl = "https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=600",
+                CreatedAt = seedDate,
+                UpdatedAt = seedDate
             },
             new Product
             {
@@ -177,7 +197,9 @@ public class AppDbContext : DbContext
                 IsAvailable = true,
                 StockQuantity = 12,
                 Category = Category.Cameras,
-                ImageUrl = "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=600"
+                ImageUrl = "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=600",
+                CreatedAt = seedDate,
+                UpdatedAt = seedDate
             },
             new Product
             {
@@ -188,7 +210,9 @@ public class AppDbContext : DbContext
                 IsAvailable = true,
                 StockQuantity = 60,
                 Category = Category.SmartHome,
-                ImageUrl = "https://images.unsplash.com/photo-1558089687-f282d8132c8c?w=600"
+                ImageUrl = "https://images.unsplash.com/photo-1558089687-f282d8132c8c?w=600",
+                CreatedAt = seedDate,
+                UpdatedAt = seedDate
             },
             new Product
             {
@@ -199,7 +223,9 @@ public class AppDbContext : DbContext
                 IsAvailable = true,
                 StockQuantity = 80,
                 Category = Category.Storage,
-                ImageUrl = "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=600"
+                ImageUrl = "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=600",
+                CreatedAt = seedDate,
+                UpdatedAt = seedDate
             }
         );
     }

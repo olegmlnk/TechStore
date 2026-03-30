@@ -71,13 +71,6 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
-// ── Auto-migrate & seed ───────────────────────────────────
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.Migrate();
-}
-
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();

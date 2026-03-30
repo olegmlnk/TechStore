@@ -251,7 +251,7 @@ namespace TechStore.Infrastructure.Migrations
                         {
                             Id = new Guid("a1b2c3d4-0001-0001-0001-000000000001"),
                             Category = 0,
-                            CreatedAt = new DateTime(2026, 3, 29, 23, 15, 31, 790, DateTimeKind.Utc).AddTicks(2964),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Apple MacBook Pro 16-inch with M4 Max chip, 36GB RAM, 1TB SSD. The most powerful MacBook ever with stunning Liquid Retina XDR display.",
                             ImageUrl = "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600",
                             IsAvailable = true,
@@ -259,13 +259,13 @@ namespace TechStore.Infrastructure.Migrations
                             Price = 3499.00m,
                             StockQuantity = 25,
                             Title = "MacBook Pro 16\" M4 Max",
-                            UpdatedAt = new DateTime(2026, 3, 29, 23, 15, 31, 790, DateTimeKind.Utc).AddTicks(2967)
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = new Guid("a1b2c3d4-0001-0001-0001-000000000002"),
                             Category = 1,
-                            CreatedAt = new DateTime(2026, 3, 29, 23, 15, 31, 790, DateTimeKind.Utc).AddTicks(4548),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Samsung Galaxy S25 Ultra with 6.9\" Dynamic AMOLED, Snapdragon 8 Elite, 200MP camera, 5000mAh battery, and S Pen.",
                             ImageUrl = "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=600",
                             IsAvailable = true,
@@ -273,13 +273,13 @@ namespace TechStore.Infrastructure.Migrations
                             Price = 1299.99m,
                             StockQuantity = 50,
                             Title = "Samsung Galaxy S25 Ultra",
-                            UpdatedAt = new DateTime(2026, 3, 29, 23, 15, 31, 790, DateTimeKind.Utc).AddTicks(4549)
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = new Guid("a1b2c3d4-0001-0001-0001-000000000003"),
                             Category = 5,
-                            CreatedAt = new DateTime(2026, 3, 29, 23, 15, 31, 790, DateTimeKind.Utc).AddTicks(4555),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Premium wireless noise-cancelling headphones with 40-hour battery life, Hi-Res Audio, and industry-leading ANC technology.",
                             ImageUrl = "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600",
                             IsAvailable = true,
@@ -287,13 +287,13 @@ namespace TechStore.Infrastructure.Migrations
                             Price = 399.99m,
                             StockQuantity = 100,
                             Title = "Sony WH-1000XM6",
-                            UpdatedAt = new DateTime(2026, 3, 29, 23, 15, 31, 790, DateTimeKind.Utc).AddTicks(4555)
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = new Guid("a1b2c3d4-0001-0001-0001-000000000004"),
                             Category = 4,
-                            CreatedAt = new DateTime(2026, 3, 29, 23, 15, 31, 790, DateTimeKind.Utc).AddTicks(4565),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Gaming laptop with Intel Core i9-14900HX, RTX 4090, 32GB DDR5, 2TB SSD, 18\" QHD+ 240Hz display.",
                             ImageUrl = "https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?w=600",
                             IsAvailable = true,
@@ -301,13 +301,13 @@ namespace TechStore.Infrastructure.Migrations
                             Price = 2999.99m,
                             StockQuantity = 15,
                             Title = "ASUS ROG Strix G18",
-                            UpdatedAt = new DateTime(2026, 3, 29, 23, 15, 31, 790, DateTimeKind.Utc).AddTicks(4565)
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = new Guid("a1b2c3d4-0001-0001-0001-000000000005"),
                             Category = 6,
-                            CreatedAt = new DateTime(2026, 3, 29, 23, 15, 31, 790, DateTimeKind.Utc).AddTicks(4569),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "The most rugged Apple Watch with 49mm titanium case, dual-frequency GPS, cellular, up to 72 hours of battery life.",
                             ImageUrl = "https://images.unsplash.com/photo-1546868871-af0de0ae72be?w=600",
                             IsAvailable = true,
@@ -315,13 +315,13 @@ namespace TechStore.Infrastructure.Migrations
                             Price = 799.99m,
                             StockQuantity = 40,
                             Title = "Apple Watch Ultra 3",
-                            UpdatedAt = new DateTime(2026, 3, 29, 23, 15, 31, 790, DateTimeKind.Utc).AddTicks(4569)
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = new Guid("a1b2c3d4-0001-0001-0001-000000000006"),
                             Category = 10,
-                            CreatedAt = new DateTime(2026, 3, 29, 23, 15, 31, 790, DateTimeKind.Utc).AddTicks(4572),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Advanced wireless mouse with MagSpeed scroll, 8K DPI sensor, ergonomic design, USB-C, works on any surface including glass.",
                             ImageUrl = "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=600",
                             IsAvailable = true,
@@ -329,13 +329,13 @@ namespace TechStore.Infrastructure.Migrations
                             Price = 109.99m,
                             StockQuantity = 200,
                             Title = "Logitech MX Master 4",
-                            UpdatedAt = new DateTime(2026, 3, 29, 23, 15, 31, 790, DateTimeKind.Utc).AddTicks(4572)
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = new Guid("a1b2c3d4-0001-0001-0001-000000000007"),
                             Category = 1,
-                            CreatedAt = new DateTime(2026, 3, 29, 23, 15, 31, 790, DateTimeKind.Utc).AddTicks(4575),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Apple iPhone 16 Pro Max with A18 Pro chip, 48MP camera system, titanium design, and all-day battery life.",
                             ImageUrl = "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=600",
                             IsAvailable = true,
@@ -343,13 +343,13 @@ namespace TechStore.Infrastructure.Migrations
                             Price = 1199.00m,
                             StockQuantity = 75,
                             Title = "iPhone 16 Pro Max",
-                            UpdatedAt = new DateTime(2026, 3, 29, 23, 15, 31, 790, DateTimeKind.Utc).AddTicks(4575)
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = new Guid("a1b2c3d4-0001-0001-0001-000000000008"),
                             Category = 10,
-                            CreatedAt = new DateTime(2026, 3, 29, 23, 15, 31, 790, DateTimeKind.Utc).AddTicks(4578),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "49-inch DQHD curved gaming monitor, 240Hz, 1ms response, Mini-LED, 1000R curvature, HDR 2000.",
                             ImageUrl = "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=600",
                             IsAvailable = true,
@@ -357,13 +357,13 @@ namespace TechStore.Infrastructure.Migrations
                             Price = 1799.99m,
                             StockQuantity = 10,
                             Title = "Samsung 49\" Odyssey G9",
-                            UpdatedAt = new DateTime(2026, 3, 29, 23, 15, 31, 790, DateTimeKind.Utc).AddTicks(4578)
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = new Guid("a1b2c3d4-0001-0001-0001-000000000009"),
                             Category = 11,
-                            CreatedAt = new DateTime(2026, 3, 29, 23, 15, 31, 790, DateTimeKind.Utc).AddTicks(4583),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Professional drone with Hasselblad camera, 8K video, omnidirectional obstacle sensing, 46-min flight time.",
                             ImageUrl = "https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=600",
                             IsAvailable = true,
@@ -371,13 +371,13 @@ namespace TechStore.Infrastructure.Migrations
                             Price = 2199.00m,
                             StockQuantity = 20,
                             Title = "DJI Mavic 4 Pro",
-                            UpdatedAt = new DateTime(2026, 3, 29, 23, 15, 31, 790, DateTimeKind.Utc).AddTicks(4584)
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = new Guid("a1b2c3d4-0001-0001-0001-000000000010"),
                             Category = 12,
-                            CreatedAt = new DateTime(2026, 3, 29, 23, 15, 31, 790, DateTimeKind.Utc).AddTicks(4586),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Full-frame mirrorless camera with 61MP sensor, AI-based autofocus, 8K video capability, 5-axis IBIS.",
                             ImageUrl = "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=600",
                             IsAvailable = true,
@@ -385,13 +385,13 @@ namespace TechStore.Infrastructure.Migrations
                             Price = 3899.99m,
                             StockQuantity = 12,
                             Title = "Sony Alpha A7R V",
-                            UpdatedAt = new DateTime(2026, 3, 29, 23, 15, 31, 790, DateTimeKind.Utc).AddTicks(4587)
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = new Guid("a1b2c3d4-0001-0001-0001-000000000011"),
                             Category = 7,
-                            CreatedAt = new DateTime(2026, 3, 29, 23, 15, 31, 790, DateTimeKind.Utc).AddTicks(4607),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Smart display with 10\" HD screen, built-in Nest Cam, Google Assistant, and smart home controls.",
                             ImageUrl = "https://images.unsplash.com/photo-1558089687-f282d8132c8c?w=600",
                             IsAvailable = true,
@@ -399,13 +399,13 @@ namespace TechStore.Infrastructure.Migrations
                             Price = 229.99m,
                             StockQuantity = 60,
                             Title = "Google Nest Hub Max",
-                            UpdatedAt = new DateTime(2026, 3, 29, 23, 15, 31, 790, DateTimeKind.Utc).AddTicks(4607)
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = new Guid("a1b2c3d4-0001-0001-0001-000000000012"),
                             Category = 9,
-                            CreatedAt = new DateTime(2026, 3, 29, 23, 15, 31, 790, DateTimeKind.Utc).AddTicks(4611),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Portable SSD with up to 2,000 MB/s read speed, USB 3.2, IP65 water/dust resistance, drop-proof.",
                             ImageUrl = "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=600",
                             IsAvailable = true,
@@ -413,7 +413,7 @@ namespace TechStore.Infrastructure.Migrations
                             Price = 349.99m,
                             StockQuantity = 80,
                             Title = "Samsung T9 Portable SSD 4TB",
-                            UpdatedAt = new DateTime(2026, 3, 29, 23, 15, 31, 790, DateTimeKind.Utc).AddTicks(4611)
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         });
                 });
 

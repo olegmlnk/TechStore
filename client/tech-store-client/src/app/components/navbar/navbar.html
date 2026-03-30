@@ -1,0 +1,25 @@
+<nav class="navbar">
+  <a routerLink="/" class="nav-brand">
+    <span class="brand-icon">⚡</span>
+    <span class="brand-text">TechStore</span>
+  </a>
+
+  <div class="nav-links">
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link">
+      Catalog
+    </a>
+
+    @if (authService.isLoggedIn()) {
+      <a routerLink="/profile" routerLinkActive="active" class="nav-link">
+        Profile
+      </a>
+      <button class="nav-btn logout" (click)="authService.logout()">
+        Log Out
+      </button>
+    } @else {
+      <a routerLink="/auth" routerLinkActive="active" class="nav-link sign-in">
+        Sign In
+      </a>
+    }
+  </div>
+</nav>

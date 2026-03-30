@@ -1,0 +1,82 @@
+<div class="product-page">
+  @if (loading()) {
+    <div class="product-skeleton">
+      <div class="skeleton-image"></div>
+      <div class="skeleton-info">
+        <div class="skeleton-bar large"></div>
+        <div class="skeleton-bar medium"></div>
+        <div class="skeleton-bar"></div>
+        <div class="skeleton-bar"></div>
+        <div class="skeleton-bar short"></div>
+      </div>
+    </div>
+  } @else if (product(); as p) {
+    <a routerLink="/" class="back-link">← Back to catalog</a>
+
+    <div class="product-detail">
+      <div class="product-image-section">
+        <div class="image-glow"></div>
+        <div class="image-container">
+          <img [src]="p.imageUrl" [alt]="p.title" />
+        </div>
+      </div>
+
+      <div class="product-info-section">
+        <span class="product-category">{{ p.categoryName }}</span>
+        <h1>{{ p.title }}</h1>
+
+        <div class="price-block">
+          <span class="price">${{ p.price.toFixed(2) }}</span>
+          <span class="stock-status" [class.in-stock]="p.stockQuantity > 0" [class.out]="p.stockQuantity === 0">
+            {{ p.stockQuantity > 0 ? '✓ In Stock (' + p.stockQuantity + ' left)' : '✕ Out of Stock' }}
+          </span>
+        </div>
+
+        <div class="divider"></div>
+
+        <p class="description">{{ p.description }}</p>
+
+        <div class="actions">
+          <div class="qty-selector">
+            <button (click)="decrementQty()" [disabled]="quantity() <= 1">−</button>
+            <span>{{ quantity() }}</span>
+            <button (click)="incrementQty()" [disabled]="quantity() >= p.stockQuantity">+</button>
+          </div>
+          <button class="add-to-cart-btn" [disabled]="!p.isAvailable">
+            🛒 Add to Cart
+          </button>
+        </div>
+
+        <div class="product-features">
+          <div class="feature">
+            <span class="feature-icon">🚚</span>
+            <div>
+              <strong>Free Shipping</strong>
+              <p>On orders over $99</p>
+            </div>
+          </div>
+          <div class="feature">
+            <span class="feature-icon">🔄</span>
+            <div>
+              <strong>30-Day Returns</strong>
+              <p>Hassle-free returns</p>
+            </div>
+          </div>
+          <div class="feature">
+            <span class="feature-icon">🛡️</span>
+            <div>
+              <strong>2-Year Warranty</strong>
+              <p>Full coverage</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <div class="not-found">
+      <span>😔</span>
+      <h2>Product not found</h2>
+      <a routerLink="/" class="back-btn">Back to catalog</a>
+    </div>
+  }
+</div>

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using TechStore.Application.Services;
+using TechStore.Core.Models;
 using TechStore.Infrastructure.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,7 +34,8 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+        RoleClaimType = System.Security.Claims.ClaimTypes.Role
     };
 });
 builder.Services.AddAuthorization();
@@ -70,6 +72,27 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
+
+// ── Seed Admin Account ────────────────────────────────────
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await db.Database.MigrateAsync();
+
+    const string adminEmail = "admin@techstore.com";
+    if (!await db.Users.AnyAsync(u => u.Email == adminEmail))
+    {
+        db.Users.Add(new User
+        {
+            FirstName = "Sys",
+            LastName = "Admin",
+            Email = adminEmail,
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword("TechStore123#"),
+            Role = "Admin"
+        });
+        await db.SaveChangesAsync();
+    }
+}
 
 if (app.Environment.IsDevelopment())
 {

@@ -20,6 +20,9 @@ public class User : BaseModel
     [Required]
     public string PasswordHash { get; set; } = string.Empty;
 
+    [MaxLength(50)]
+    public string Role { get; set; } = "User";
+
     public ICollection<Address> Addresses { get; set; } = new List<Address>();
     public ICollection<Order> Orders { get; set; } = new List<Order>();
     public Cart? Cart { get; set; }

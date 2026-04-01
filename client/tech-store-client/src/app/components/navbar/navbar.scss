@@ -64,6 +64,23 @@
       box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
     }
   }
+
+  &.admin-link {
+    background: rgba(123, 47, 247, 0.12);
+    border: 1px solid rgba(123, 47, 247, 0.25);
+    color: #b388ff;
+
+    &:hover {
+      background: rgba(123, 47, 247, 0.2);
+      color: #d1c4e9;
+    }
+
+    &.active {
+      background: rgba(123, 47, 247, 0.2);
+      border-color: rgba(123, 47, 247, 0.4);
+      color: #e1bee7;
+    }
+  }
 }
 
 .nav-btn {

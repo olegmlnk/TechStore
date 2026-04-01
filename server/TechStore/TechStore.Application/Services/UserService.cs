@@ -9,12 +9,12 @@ namespace TechStore.Application.Services;
 public class UserService
 {
 
-    private readonly AppDbContext _db;
+    private readonly AppDbContext _context;
     private readonly ILogger<UserService> _logger;
 
-    public UserService(AppDbContext db, ILogger<UserService> logger)
+    public UserService(AppDbContext context, ILogger<UserService> logger)
     {
-        _db = db;
+        _context = context;
         _logger = logger;
     }
 

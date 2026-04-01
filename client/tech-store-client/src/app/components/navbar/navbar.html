@@ -10,6 +10,11 @@
     </a>
 
     @if (authService.isLoggedIn()) {
+      @if (authService.isAdmin()) {
+        <a routerLink="/admin" routerLinkActive="active" class="nav-link admin-link">
+          🛡️ Admin
+        </a>
+      }
       <a routerLink="/profile" routerLinkActive="active" class="nav-link">
         Profile
       </a>

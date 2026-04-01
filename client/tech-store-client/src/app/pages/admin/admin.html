@@ -1,0 +1,239 @@
+<div class="admin-page">
+  <!-- Header -->
+  <section class="admin-header">
+    <div class="header-glow"></div>
+    <div class="header-content">
+      <div class="header-top">
+        <div>
+          <h1><span class="gradient-text">Admin Panel</span></h1>
+          <p class="subtitle">Manage your product catalog</p>
+        </div>
+        <button class="create-btn" (click)="openCreateModal()">
+          <span>＋</span> Add Product
+        </button>
+      </div>
+
+      <div class="admin-search-box">
+        <span class="search-icon">🔍</span>
+        <input
+          type="text"
+          placeholder="Search products..."
+          [ngModel]="searchQuery()"
+          (ngModelChange)="searchQuery.set($event)"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- Success Toast -->
+  @if (success()) {
+    <div class="toast-success">
+      <span>✓</span> {{ success() }}
+    </div>
+  }
+
+  <!-- Products Table -->
+  <section class="table-section">
+    @if (loading()) {
+      <div class="loading-state">
+        <div class="spinner-large"></div>
+        <p>Loading products...</p>
+      </div>
+    } @else {
+      <div class="table-container">
+        <div class="table-header">
+          <span class="product-count">{{ filteredProducts().length }} products</span>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (product of filteredProducts(); track product.id) {
+                <tr>
+                  <td class="product-cell">
+                    <div class="product-info">
+                      <div class="product-thumb">
+                        @if (product.imageUrl) {
+                          <img [src]="product.imageUrl" [alt]="product.title" />
+                        } @else {
+                          <span class="no-img">📦</span>
+                        }
+                      </div>
+                      <div>
+                        <div class="product-name">{{ product.title }}</div>
+                        <div class="product-desc">{{ product.description | slice:0:60 }}...</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="category-badge">{{ product.categoryName }}</span>
+                  </td>
+                  <td class="price-cell">${{ product.price.toFixed(2) }}</td>
+                  <td>
+                    <span class="stock-badge" [class.low]="product.stockQuantity < 10" [class.out]="product.stockQuantity === 0">
+                      {{ product.stockQuantity }}
+                    </span>
+                  </td>
+                  <td>
+                    <span class="status-badge" [class.active]="product.isAvailable" [class.inactive]="!product.isAvailable">
+                      {{ product.isAvailable ? 'Active' : 'Inactive' }}
+                    </span>
+                  </td>
+                  <td class="actions-cell">
+                    @if (deleteConfirmId() === product.id) {
+                      <div class="delete-confirm">
+                        <span>Delete?</span>
+                        <button class="confirm-yes" (click)="deleteProduct(product.id)">Yes</button>
+                        <button class="confirm-no" (click)="cancelDelete()">No</button>
+                      </div>
+                    } @else {
+                      <button class="action-btn edit" (click)="openEditModal(product)" title="Edit">
+                        ✏️
+                      </button>
+                      <button class="action-btn delete" (click)="confirmDelete(product.id)" title="Delete">
+                        🗑️
+                      </button>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        @if (filteredProducts().length === 0) {
+          <div class="empty-state">
+            <span class="empty-icon">📦</span>
+            <h3>No products found</h3>
+            <p>Try a different search or add a new product</p>
+          </div>
+        }
+      </div>
+    }
+  </section>
+
+  <!-- Modal Overlay -->
+  @if (showModal()) {
+    <div class="modal-overlay" (click)="closeModal()">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>{{ editingId() ? 'Edit Product' : 'New Product' }}</h2>
+          <button class="modal-close" (click)="closeModal()">✕</button>
+        </div>
+
+        @if (error()) {
+          <div class="error-banner">
+            <span>⚠️</span> {{ error() }}
+          </div>
+        }
+
+        <form (ngSubmit)="saveProduct()" class="modal-form">
+          <div class="form-group">
+            <label for="title">Title *</label>
+            <input
+              type="text"
+              id="title"
+              [(ngModel)]="form.title"
+              name="title"
+              placeholder="Product name"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea
+              id="description"
+              [(ngModel)]="form.description"
+              name="description"
+              placeholder="Product description..."
+              rows="3"
+            ></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="price">Price ($) *</label>
+              <input
+                type="number"
+                id="price"
+                [(ngModel)]="form.price"
+                name="price"
+                step="0.01"
+                min="0.01"
+                placeholder="0.00"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="stockQuantity">Stock</label>
+              <input
+                type="number"
+                id="stockQuantity"
+                [(ngModel)]="form.stockQuantity"
+                name="stockQuantity"
+                min="0"
+                placeholder="0"
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="category">Category</label>
+              <select id="category" [(ngModel)]="form.category" name="category">
+                @for (cat of categories; track cat.id) {
+                  <option [ngValue]="cat.id">{{ cat.name }}</option>
+                }
+              </select>
+            </div>
+            <div class="form-group checkbox-group">
+              <label class="checkbox-label">
+                <input type="checkbox" [(ngModel)]="form.isAvailable" name="isAvailable" />
+                <span class="checkmark"></span>
+                Available
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="imageUrl">Image URL</label>
+            <input
+              type="text"
+              id="imageUrl"
+              [(ngModel)]="form.imageUrl"
+              name="imageUrl"
+              placeholder="https://..."
+            />
+          </div>
+
+          @if (form.imageUrl) {
+            <div class="image-preview">
+              <img [src]="form.imageUrl" alt="Preview" />
+            </div>
+          }
+
+          <div class="modal-actions">
+            <button type="button" class="cancel-btn" (click)="closeModal()">Cancel</button>
+            <button type="submit" class="save-btn" [disabled]="saving()">
+              @if (saving()) {
+                <span class="spinner"></span> Saving...
+              } @else {
+                {{ editingId() ? 'Update Product' : 'Create Product' }}
+              }
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>

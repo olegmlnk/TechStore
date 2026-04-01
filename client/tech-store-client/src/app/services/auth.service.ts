@@ -17,6 +17,7 @@ export class AuthService {
 
   currentUser = signal<AuthResponse | null>(this.loadUser());
   isLoggedIn = computed(() => !!this.currentUser());
+  isAdmin = computed(() => this.currentUser()?.role === 'Admin');
 
   register(req: RegisterRequest) {
     return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/register`, req)

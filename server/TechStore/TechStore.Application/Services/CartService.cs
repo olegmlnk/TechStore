@@ -16,172 +16,255 @@ public class CartService
 
     public async Task<CartResponse> GetCartAsync(Guid userId)
     {
-        var cart = await GetOrCreateCartEntityAsync(userId);
-        if (_db.Entry(cart).State == EntityState.Added)
-            await _db.SaveChangesAsync();
-        return MapToResponse(cart);
+        var cartId = await EnsureCartIdAsync(userId);
+        return await BuildCartResponseAsync(cartId);
     }
 
     public async Task<CartResponse> AddToCartAsync(Guid userId, AddToCartRequest req)
     {
-        var cart = await GetOrCreateCartEntityAsync(userId);
+        ValidateQuantity(req.Quantity);
 
-        var product = await _db.Products.AsNoTracking().FirstOrDefaultAsync(p => p.Id == req.ProductId);
-        if (product == null || !product.IsAvailable || product.StockQuantity < req.Quantity)
+        var product = await GetAvailableProductAsync(req.ProductId);
+        if (product is null)
             throw new InvalidOperationException("Product is not available or out of stock.");
 
-        var existingItem = cart.Items.FirstOrDefault(i => i.ProductId == req.ProductId);
-        if (existingItem != null)
-        {
-            if (existingItem.Quantity + req.Quantity > product.StockQuantity)
-                throw new InvalidOperationException("Not enough stock available.");
+        var cartId = await EnsureCartIdAsync(userId);
+        await using var transaction = await _db.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
 
-            existingItem.Quantity += req.Quantity;
+        var existingQuantity = await _db.CartItems
+            .AsNoTracking()
+            .Where(i => i.CartId == cartId && i.ProductId == req.ProductId && !i.IsDeleted)
+            .Select(i => (int?)i.Quantity)
+            .FirstOrDefaultAsync();
+
+        var nextQuantity = (existingQuantity ?? 0) + req.Quantity;
+        if (nextQuantity > product.StockQuantity)
+            throw new InvalidOperationException("Not enough stock available.");
+
+        if (existingQuantity.HasValue)
+        {
+            await _db.CartItems
+                .Where(i => i.CartId == cartId && i.ProductId == req.ProductId && !i.IsDeleted)
+                .ExecuteUpdateAsync(setters => setters
+                    .SetProperty(i => i.Quantity, nextQuantity)
+                    .SetProperty(i => i.UpdatedAt, DateTime.UtcNow));
         }
         else
         {
-            cart.Items.Add(new CartItem
+            _db.CartItems.Add(new CartItem
             {
-                CartId = cart.Id,
+                CartId = cartId,
                 ProductId = req.ProductId,
                 Quantity = req.Quantity
             });
+
+            await _db.SaveChangesAsync();
         }
 
-        // SaveChanges only touches CartItem (INSERT/UPDATE) and Cart INSERT for new carts.
-        // We never mutate Cart.TotalPrice through the change tracker, which avoids the
-        // DbUpdateConcurrencyException caused by EF Core 10's Cart UPDATE path.
-        await _db.SaveChangesAsync();
-
-        // Recalculate and persist Cart.TotalPrice via ExecuteUpdateAsync (clean SQL,
-        // no rows-affected concurrency check).
-        await SyncCartTotalAsync(cart.Id);
-
-        return MapToResponse(await LoadCartWithProductsAsync(cart.Id));
+        await UpdateCartTotalAsync(cartId);
+        await transaction.CommitAsync();
+        return await BuildCartResponseAsync(cartId);
     }
 
     public async Task<CartResponse> UpdateQuantityAsync(Guid userId, Guid itemId, UpdateCartItemRequest req)
     {
-        var cart = await GetOrCreateCartEntityAsync(userId);
-        var item = cart.Items.FirstOrDefault(i => i.Id == itemId);
+        ValidateQuantity(req.Quantity);
 
-        if (item == null)
+        var cartId = await EnsureCartIdAsync(userId);
+        var item = await _db.CartItems
+            .AsNoTracking()
+            .Where(i => i.Id == itemId && i.CartId == cartId && !i.IsDeleted)
+            .Select(i => new { i.Id, i.ProductId })
+            .FirstOrDefaultAsync();
+
+        if (item is null)
             throw new KeyNotFoundException("Item not found in cart.");
 
-        if (item.Product == null)
+        var product = await GetAvailableProductAsync(item.ProductId);
+        if (product is null)
             throw new InvalidOperationException("Product is no longer available.");
 
-        if (req.Quantity > item.Product.StockQuantity)
+        if (req.Quantity > product.StockQuantity)
             throw new InvalidOperationException("Requested quantity exceeds available stock.");
 
-        item.Quantity = req.Quantity;
-        await _db.SaveChangesAsync();
-        await SyncCartTotalAsync(cart.Id);
+        await using var transaction = await _db.Database.BeginTransactionAsync();
 
-        return MapToResponse(await LoadCartWithProductsAsync(cart.Id));
+        var affectedRows = await _db.CartItems
+            .Where(i => i.Id == itemId && i.CartId == cartId && !i.IsDeleted)
+            .ExecuteUpdateAsync(setters => setters
+                .SetProperty(i => i.Quantity, req.Quantity)
+                .SetProperty(i => i.UpdatedAt, DateTime.UtcNow));
+
+        if (affectedRows == 0)
+            throw new KeyNotFoundException("Item not found in cart.");
+
+        await UpdateCartTotalAsync(cartId);
+        await transaction.CommitAsync();
+        return await BuildCartResponseAsync(cartId);
     }
 
     public async Task<CartResponse> RemoveItemAsync(Guid userId, Guid itemId)
     {
-        var cart = await GetOrCreateCartEntityAsync(userId);
-        var item = cart.Items.FirstOrDefault(i => i.Id == itemId);
+        var cartId = await EnsureCartIdAsync(userId);
 
-        if (item == null)
-            return MapToResponse(cart);
+        await using var transaction = await _db.Database.BeginTransactionAsync();
 
-        cart.Items.Remove(item);
-        await _db.SaveChangesAsync();
-        await SyncCartTotalAsync(cart.Id);
+        await _db.CartItems
+            .Where(i => i.Id == itemId && i.CartId == cartId && !i.IsDeleted)
+            .ExecuteDeleteAsync();
 
-        return MapToResponse(await LoadCartWithProductsAsync(cart.Id));
+        await UpdateCartTotalAsync(cartId);
+        await transaction.CommitAsync();
+        return await BuildCartResponseAsync(cartId);
     }
 
     public async Task<CartResponse> ClearCartAsync(Guid userId)
     {
-        var cart = await GetOrCreateCartEntityAsync(userId);
+        var cartId = await EnsureCartIdAsync(userId);
 
-        if (!cart.Items.Any())
-            return MapToResponse(cart);
+        await using var transaction = await _db.Database.BeginTransactionAsync();
 
-        _db.CartItems.RemoveRange(cart.Items);
-        await _db.SaveChangesAsync();
+        await _db.CartItems
+            .Where(i => i.CartId == cartId && !i.IsDeleted)
+            .ExecuteDeleteAsync();
+
+        await UpdateCartTotalAsync(cartId);
+        await transaction.CommitAsync();
+        return await BuildCartResponseAsync(cartId);
+    }
+
+    private async Task<Guid> EnsureCartIdAsync(Guid userId)
+    {
+        var existingCart = await _db.Carts
+            .IgnoreQueryFilters()
+            .AsNoTracking()
+            .Where(c => c.UserId == userId)
+            .Select(c => new { c.Id, c.IsDeleted })
+            .FirstOrDefaultAsync();
+
+        if (existingCart is not null)
+        {
+            if (existingCart.IsDeleted)
+            {
+                await _db.Carts
+                    .IgnoreQueryFilters()
+                    .Where(c => c.Id == existingCart.Id)
+                    .ExecuteUpdateAsync(setters => setters
+                        .SetProperty(c => c.IsDeleted, false)
+                        .SetProperty(c => c.UpdatedAt, DateTime.UtcNow));
+            }
+
+            return existingCart.Id;
+        }
+
+        var cart = new Cart
+        {
+            UserId = userId,
+            TotalPrice = 0m
+        };
+
+        _db.Carts.Add(cart);
+
+        try
+        {
+            await _db.SaveChangesAsync();
+            return cart.Id;
+        }
+        catch (DbUpdateException)
+        {
+            _db.Entry(cart).State = EntityState.Detached;
+
+            var concurrentCart = await _db.Carts
+                .IgnoreQueryFilters()
+                .AsNoTracking()
+                .Where(c => c.UserId == userId)
+                .Select(c => new { c.Id, c.IsDeleted })
+                .FirstOrDefaultAsync();
+
+            if (concurrentCart is null)
+                throw;
+
+            if (concurrentCart.IsDeleted)
+            {
+                await _db.Carts
+                    .IgnoreQueryFilters()
+                    .Where(c => c.Id == concurrentCart.Id)
+                    .ExecuteUpdateAsync(setters => setters
+                        .SetProperty(c => c.IsDeleted, false)
+                        .SetProperty(c => c.UpdatedAt, DateTime.UtcNow));
+            }
+
+            return concurrentCart.Id;
+        }
+    }
+
+    private Task<Product?> GetAvailableProductAsync(Guid productId)
+    {
+        return _db.Products
+            .AsNoTracking()
+            .FirstOrDefaultAsync(p => p.Id == productId && p.IsAvailable);
+    }
+
+    private async Task UpdateCartTotalAsync(Guid cartId)
+    {
+        var total = await _db.CartItems
+            .AsNoTracking()
+            .Where(i => i.CartId == cartId && !i.IsDeleted)
+            .Join(
+                _db.Products.AsNoTracking(),
+                item => item.ProductId,
+                product => product.Id,
+                (item, product) => (decimal?)(item.Quantity * product.Price))
+            .SumAsync() ?? 0m;
 
         await _db.Carts
             .IgnoreQueryFilters()
-            .Where(c => c.Id == cart.Id)
-            .ExecuteUpdateAsync(s => s.SetProperty(c => c.TotalPrice, 0m));
-
-        return MapToResponse(await LoadCartWithProductsAsync(cart.Id));
-    }
-
-    // ── Private helpers ──────────────────────────────────────────────────────
-
-    private async Task<Cart> GetOrCreateCartEntityAsync(Guid userId)
-    {
-        var cart = await _db.Carts
-            .Include(c => c.Items)
-            .ThenInclude(i => i.Product)
-            .FirstOrDefaultAsync(c => c.UserId == userId);
-
-        if (cart == null)
-        {
-            cart = new Cart { UserId = userId, TotalPrice = 0 };
-            _db.Carts.Add(cart);
-        }
-
-        return cart;
-    }
-
-    /// <summary>
-    /// Recalculates the cart total directly from the DB (joining CartItems × Products)
-    /// and persists it via ExecuteUpdateAsync, bypassing EF change tracking entirely.
-    /// </summary>
-    private async Task SyncCartTotalAsync(Guid cartId)
-    {
-        var total = await _db.CartItems
-            .Where(i => i.CartId == cartId)
-            .Join(_db.Products,          // Products global filter (!IsDeleted) applies here
-                  i => i.ProductId,
-                  p => p.Id,
-                  (i, p) => i.Quantity * p.Price)
-            .SumAsync();
-
-        await _db.Carts
-            .IgnoreQueryFilters()        // Update the Cart row regardless of IsDeleted state
             .Where(c => c.Id == cartId)
-            .ExecuteUpdateAsync(s => s.SetProperty(c => c.TotalPrice, total));
+            .ExecuteUpdateAsync(setters => setters
+                .SetProperty(c => c.TotalPrice, total)
+                .SetProperty(c => c.UpdatedAt, DateTime.UtcNow)
+                .SetProperty(c => c.IsDeleted, false));
     }
 
-    /// <summary>
-    /// Always loads a fresh (AsNoTracking) cart from the DB so we pick up the
-    /// TotalPrice written by SyncCartTotalAsync rather than a stale tracked value.
-    /// </summary>
-    private async Task<Cart> LoadCartWithProductsAsync(Guid cartId)
+    private async Task<CartResponse> BuildCartResponseAsync(Guid cartId)
     {
-        return await _db.Carts
+        var cartExists = await _db.Carts
+            .IgnoreQueryFilters()
             .AsNoTracking()
-            .Include(c => c.Items)
-            .ThenInclude(i => i.Product)
-            .FirstAsync(c => c.Id == cartId);
-    }
+            .AnyAsync(c => c.Id == cartId);
 
-    private CartResponse MapToResponse(Cart cart)
-    {
+        if (!cartExists)
+            throw new KeyNotFoundException("Cart not found.");
+
+        var items = await _db.CartItems
+            .AsNoTracking()
+            .Where(i => i.CartId == cartId && !i.IsDeleted)
+            .Join(
+                _db.Products.AsNoTracking(),
+                item => item.ProductId,
+                product => product.Id,
+                (item, product) => new CartItemResponse
+                {
+                    Id = item.Id,
+                    ProductId = item.ProductId,
+                    ProductTitle = product.Title,
+                    ProductImageUrl = product.ImageUrl,
+                    UnitPrice = product.Price,
+                    Quantity = item.Quantity
+                })
+            .ToListAsync();
+
         return new CartResponse
         {
-            Id = cart.Id,
-            TotalPrice = cart.TotalPrice,
-            Items = cart.Items
-                .Where(i => i.Product != null)
-                .Select(i => new CartItemResponse
-                {
-                    Id = i.Id,
-                    ProductId = i.ProductId,
-                    ProductTitle = i.Product!.Title,
-                    ProductImageUrl = i.Product.ImageUrl,
-                    UnitPrice = i.Product.Price,
-                    Quantity = i.Quantity
-                }).ToList()
+            Id = cartId,
+            Items = items,
+            TotalPrice = items.Sum(i => i.TotalPrice)
         };
+    }
+
+    private static void ValidateQuantity(int quantity)
+    {
+        if (quantity <= 0)
+            throw new InvalidOperationException("Quantity must be greater than zero.");
     }
 }

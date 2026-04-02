@@ -4,6 +4,7 @@
 **/_buildcheck/
 _buildcheck/
 build-diag.log
+.codex-build/
 
 # Local tools
 .dotnet/

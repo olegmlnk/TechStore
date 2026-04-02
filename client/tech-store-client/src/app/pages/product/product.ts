@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ProductService } from '../../services/product.service';
 import { AuthService } from '../../services/auth.service';
+import { CartService } from '../../services/cart.service';
 import { Product } from '../../models/product.model';
 
 @Component({
@@ -15,6 +16,7 @@ import { Product } from '../../models/product.model';
 export class ProductPage implements OnInit {
   private route = inject(ActivatedRoute);
   private productService = inject(ProductService);
+  private cartService = inject(CartService);
   authService = inject(AuthService);
 
   product = signal<Product | null>(null);
@@ -45,5 +47,18 @@ export class ProductPage implements OnInit {
     if (this.quantity() > 1) {
       this.quantity.set(this.quantity() - 1);
     }
+  }
+
+  addToCart(productId: string) {
+    if (!this.authService.isLoggedIn()) {
+      // In a real app we might redirect to login here
+      alert('Please sign in to add items to your cart.');
+      return;
+    }
+
+    this.cartService.addToCart({
+      productId: productId,
+      quantity: this.quantity()
+    });
   }
 }

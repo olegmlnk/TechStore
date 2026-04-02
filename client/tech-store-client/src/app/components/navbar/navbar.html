@@ -10,6 +10,13 @@
     </a>
 
     @if (authService.isLoggedIn()) {
+      <button class="nav-btn cart-btn" (click)="cartService.toggleCart()">
+        🛒 Cart
+        @if (cartService.itemCount() > 0) {
+          <span class="cart-badge">{{ cartService.itemCount() }}</span>
+        }
+      </button>
+
       @if (authService.isAdmin()) {
         <a routerLink="/admin" routerLinkActive="active" class="nav-link admin-link">
           🛡️ Admin

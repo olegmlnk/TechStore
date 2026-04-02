@@ -81,6 +81,44 @@
       color: #e1bee7;
     }
   }
+
+  &.logout {
+    border: 1px solid rgba(255, 59, 48, 0.2);
+    color: #ff6b6b;
+
+    &:hover {
+      background: rgba(255, 59, 48, 0.1);
+      border-color: rgba(255, 59, 48, 0.4);
+    }
+  }
+
+  &.cart-btn {
+    position: relative;
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    color: #00d4ff;
+
+    &:hover {
+      background: rgba(0, 212, 255, 0.1);
+      border-color: rgba(0, 212, 255, 0.4);
+    }
+
+    .cart-badge {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      background: linear-gradient(135deg, #00d4ff, #7b2ff7);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      border: 2px solid #0f0f16; /* match navbar bg */
+    }
+  }
 }
 
 .nav-btn {

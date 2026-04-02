@@ -58,6 +58,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<CartService>();
 
 // ── Swagger / OpenAPI ─────────────────────────────────────
 builder.Services.AddControllers();

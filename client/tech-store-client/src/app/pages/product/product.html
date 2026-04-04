@@ -23,7 +23,7 @@
 
     <div class="product-info-section">
       <span class="product-category">{{ p.categoryName }}</span>
-      <h1>{{ p.title }}</h1>
+      <h1 data-testid="product-title">{{ p.title }}</h1>
 
       <div class="price-block">
         <span class="price">${{ p.price.toFixed(2) }}</span>
@@ -38,11 +38,11 @@
 
       <div class="actions">
         <div class="qty-selector">
-          <button (click)="decrementQty()" [disabled]="quantity() <= 1">-</button>
-          <span>{{ quantity() }}</span>
-          <button (click)="incrementQty()" [disabled]="quantity() >= p.stockQuantity">+</button>
+          <button (click)="decrementQty()" [disabled]="quantity() <= 1" data-testid="product-qty-decrement">-</button>
+          <span data-testid="product-quantity">{{ quantity() }}</span>
+          <button (click)="incrementQty()" [disabled]="quantity() >= p.stockQuantity" data-testid="product-qty-increment">+</button>
         </div>
-        <button class="add-to-cart-btn" [disabled]="!p.isAvailable" (click)="addToCart(p.id)">
+        <button class="add-to-cart-btn" [disabled]="!p.isAvailable" (click)="addToCart(p.id)" data-testid="product-add-to-cart">
           🛒 Add to Cart
         </button>
       </div>

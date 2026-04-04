@@ -5,6 +5,8 @@
 _buildcheck/
 build-diag.log
 .codex-build/
+playwright-report/
+test-results/
 
 # Local tools
 .dotnet/

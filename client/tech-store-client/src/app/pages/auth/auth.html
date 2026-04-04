@@ -17,7 +17,7 @@
         </div>
       }
 
-      <form (ngSubmit)="submit()" class="auth-form">
+      <form (ngSubmit)="submit()" class="auth-form" data-testid="auth-form">
         @if (!isLogin()) {
           <div class="form-row">
             <div class="form-group">
@@ -28,6 +28,7 @@
                 [(ngModel)]="form.firstName"
                 name="firstName"
                 placeholder="John"
+                data-testid="auth-first-name"
                 required
               />
             </div>
@@ -39,6 +40,7 @@
                 [(ngModel)]="form.lastName"
                 name="lastName"
                 placeholder="Doe"
+                data-testid="auth-last-name"
                 required
               />
             </div>
@@ -53,6 +55,7 @@
             [(ngModel)]="form.email"
             name="email"
             placeholder="you@example.com"
+            data-testid="auth-email"
             required
           />
         </div>
@@ -64,13 +67,14 @@
             id="password"
             [(ngModel)]="form.password"
             name="password"
+            data-testid="auth-password"
             placeholder="••••••••"
             required
             minlength="6"
           />
         </div>
 
-        <button type="submit" class="submit-btn" [disabled]="loading()">
+        <button type="submit" class="submit-btn" [disabled]="loading()" data-testid="auth-submit">
           @if (loading()) {
             <span class="spinner"></span> Processing...
           } @else {
@@ -82,7 +86,7 @@
       <div class="auth-footer">
         <p>
           {{ isLogin() ? "Don't have an account?" : 'Already have an account?' }}
-          <button type="button" class="toggle-btn" (click)="toggleMode()">
+          <button type="button" class="toggle-btn" (click)="toggleMode()" data-testid="auth-toggle-mode">
             {{ isLogin() ? 'Sign Up' : 'Sign In' }}
           </button>
         </p>

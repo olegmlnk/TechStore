@@ -10,6 +10,9 @@
     "test:unit": "ng test --watch=false",
     "test:unit:watch": "ng test",
     "test:unit:coverage": "ng test --watch=false --coverage",
+    "test:unit:broken": "ng test --watch=false --configuration broken",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
     "serve:ssr:tech-store-client": "node dist/tech-store-client/server/server.mjs"
   },
   "prettier": {
@@ -43,6 +46,7 @@
     "@angular/build": "^21.1.4",
     "@angular/cli": "^21.1.4",
     "@angular/compiler-cli": "^21.1.0",
+    "@playwright/test": "^1.55.0",
     "@types/express": "^5.0.1",
     "@types/node": "^20.17.19",
     "@vitest/coverage-v8": "^4.0.8",

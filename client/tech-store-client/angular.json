@@ -78,7 +78,18 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "tsConfig": "tsconfig.spec.json"
+            "tsConfig": "tsconfig.spec.json",
+            "exclude": [
+              "src/broken-tests/**/*.spec.ts"
+            ]
+          },
+          "configurations": {
+            "broken": {
+              "include": [
+                "src/broken-tests/**/*.spec.ts"
+              ],
+              "exclude": []
+            }
           }
         }
       }

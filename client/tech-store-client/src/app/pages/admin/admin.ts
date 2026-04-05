@@ -109,6 +109,12 @@ export class AdminPage implements OnInit {
     this.error.set('');
   }
 
+  closeModalFromOverlay(event: MouseEvent) {
+    if (event.target === event.currentTarget) {
+      this.closeModal();
+    }
+  }
+
   saveProduct() {
     if (!this.form.title.trim() || this.form.price <= 0) {
       this.error.set('Title and a valid price are required.');

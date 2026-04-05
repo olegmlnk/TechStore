@@ -1,6 +1,12 @@
 <!-- Overlay background -->
 @if (cartService.isCartOpen()) {
-  <div class="cart-overlay" (click)="cartService.closeCart()"></div>
+  <div
+    class="cart-overlay"
+    tabindex="0"
+    (click)="cartService.closeCart()"
+    (keyup.enter)="cartService.closeCart()"
+    (keyup.space)="cartService.closeCart()"
+  ></div>
 }
 
 <!-- The Sidebar Drawer -->
@@ -41,9 +47,9 @@
           
           <!-- Details -->
           <div class="item-details">
-            <h4 class="item-title" [routerLink]="['/product', item.productId]" (click)="cartService.closeCart()" data-testid="cart-item-title">
+            <a class="item-title" [routerLink]="['/product', item.productId]" (click)="cartService.closeCart()" data-testid="cart-item-title">
               {{ item.productTitle }}
-            </h4>
+            </a>
             <div class="item-price">${{ item.unitPrice.toFixed(2) }}</div>
             
             <!-- Actions -->

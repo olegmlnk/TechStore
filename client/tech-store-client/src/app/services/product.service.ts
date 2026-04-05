@@ -13,7 +13,7 @@ export interface CreateProductRequest {
   imageUrl: string;
 }
 
-export interface UpdateProductRequest extends CreateProductRequest {}
+export type UpdateProductRequest = CreateProductRequest;
 
 @Injectable({ providedIn: 'root' })
 export class ProductService {

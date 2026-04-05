@@ -1,7 +1,7 @@
 import { Injectable, inject, signal, computed, effect } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { CartResponse, AddToCartRequest, UpdateCartItemRequest } from '../models/cart.model';
+import { CartResponse, AddToCartRequest } from '../models/cart.model';
 import { AuthService } from './auth.service';
 
 @Injectable({ providedIn: 'root' })

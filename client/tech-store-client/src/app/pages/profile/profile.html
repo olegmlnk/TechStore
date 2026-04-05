@@ -22,12 +22,12 @@
           <form (ngSubmit)="saveProfile()" class="edit-form">
             <div class="form-row">
               <div class="form-group">
-                <label>First Name</label>
-                <input [(ngModel)]="editForm.firstName" name="firstName" required />
+                <label for="profile-first-name">First Name</label>
+                <input id="profile-first-name" [(ngModel)]="editForm.firstName" name="firstName" required />
               </div>
               <div class="form-group">
-                <label>Last Name</label>
-                <input [(ngModel)]="editForm.lastName" name="lastName" required />
+                <label for="profile-last-name">Last Name</label>
+                <input id="profile-last-name" [(ngModel)]="editForm.lastName" name="lastName" required />
               </div>
             </div>
             <div class="form-actions">

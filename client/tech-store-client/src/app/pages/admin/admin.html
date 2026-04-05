@@ -123,8 +123,14 @@
 
   <!-- Modal Overlay -->
   @if (showModal()) {
-    <div class="modal-overlay" (click)="closeModal()">
-      <div class="modal-card" (click)="$event.stopPropagation()">
+    <div
+      class="modal-overlay"
+      tabindex="0"
+      (click)="closeModalFromOverlay($event)"
+      (keyup.enter)="closeModal()"
+      (keyup.space)="closeModal()"
+    >
+      <div class="modal-card">
         <div class="modal-header">
           <h2>{{ editingId() ? 'Edit Product' : 'New Product' }}</h2>
           <button class="modal-close" (click)="closeModal()">✕</button>

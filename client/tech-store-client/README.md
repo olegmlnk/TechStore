@@ -60,3 +60,19 @@ The larger `dist/` size is expected because it contains compiled browser bundles
 - Local `.env` and `.env.production` files are kept outside Git and ignored by the repository.
 - The runtime environment status for the UI is intentionally implemented through Angular environments, not `import.meta.env`.
 - A short explanation for this decision is documented in [BUILD-SYSTEM-NOTE.md](./BUILD-SYSTEM-NOTE.md).
+
+## CI/CD and Vercel
+
+The repository includes a GitHub Actions workflow at `/.github/workflows/ci-cd.yml`.
+
+- On every push or pull request to `main` and `develop`, the pipeline installs dependencies, runs ESLint, runs unit tests, builds the Angular app, and uploads the build artifact.
+- On pushes to `develop`, the workflow deploys a preview build to Vercel.
+- On pushes to `main`, the workflow deploys a production build to Vercel.
+
+Before enabling deployment, add these repository secrets in GitHub:
+
+- `VERCEL_TOKEN`
+- `VERCEL_ORG_ID`
+- `VERCEL_PROJECT_ID`
+
+In the Vercel project settings, set the Root Directory to `client/tech-store-client`.

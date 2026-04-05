@@ -5,6 +5,7 @@
 _buildcheck/
 build-diag.log
 .codex-build/
+**/.vercel/
 playwright-report/
 test-results/
 **/dist/

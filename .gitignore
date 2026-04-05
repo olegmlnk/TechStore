@@ -4,6 +4,14 @@
 **/_buildcheck/
 _buildcheck/
 build-diag.log
+.codex-build/
+**/.vercel/
+playwright-report/
+test-results/
+**/dist/
+**/node_modules/
+.env
+.env.production
 
 # Local tools
 .dotnet/

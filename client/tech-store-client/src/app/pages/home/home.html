@@ -1,0 +1,92 @@
+<div class="home-page">
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-content">
+      <h1>Discover the <span class="gradient-text">Future of Tech</span></h1>
+      <p>Premium gadgets, cutting-edge devices, and everything you need — all in one place.</p>
+      <div class="search-container">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input
+            type="text"
+            placeholder="Search products..."
+            [ngModel]="searchQuery()"
+            (ngModelChange)="searchQuery.set($event)"
+            (keyup.enter)="onSearch()"
+          />
+          <button class="search-btn" (click)="onSearch()">Search</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Categories -->
+  <section class="categories-section">
+    <div class="categories-scroll">
+      <button
+        class="category-chip"
+        [class.active]="selectedCategory() === null"
+        (click)="filterByCategory(null)"
+      >
+        <span>🌐</span> All
+      </button>
+      @for (cat of categories; track cat.id) {
+        <button
+          class="category-chip"
+          [class.active]="selectedCategory() === cat.id"
+          (click)="filterByCategory(cat.id)"
+        >
+          <span>{{ cat.icon }}</span> {{ cat.name }}
+        </button>
+      }
+    </div>
+  </section>
+
+  <!-- Products Grid -->
+  <section class="products-section">
+    <div class="section-header">
+      <h2>{{ selectedCategory() !== null ? 'Category Results' : 'All Products' }}</h2>
+      <span class="product-count">{{ filteredProducts().length }} items</span>
+    </div>
+
+    @if (loading()) {
+      <div class="loading-grid">
+        @for (i of [1,2,3,4,5,6]; track i) {
+          <div class="skeleton-card">
+            <div class="skeleton-img"></div>
+            <div class="skeleton-text"></div>
+            <div class="skeleton-text short"></div>
+          </div>
+        }
+      </div>
+    } @else if (filteredProducts().length === 0) {
+      <div class="empty-state">
+        <span class="empty-icon">📦</span>
+        <h3>No products found</h3>
+        <p>Try a different search or category</p>
+      </div>
+    } @else {
+      <div class="products-grid">
+        @for (product of filteredProducts(); track product.id) {
+          <a [routerLink]="['/product', product.id]" class="product-card">
+            <div class="card-image">
+              <img [src]="product.imageUrl" [alt]="product.title" loading="lazy" />
+              <div class="card-badge">{{ product.categoryName }}</div>
+            </div>
+            <div class="card-body">
+              <h3 class="card-title">{{ product.title }}</h3>
+              <p class="card-desc">{{ product.description | slice:0:80 }}...</p>
+              <div class="card-footer">
+                <span class="card-price">${{ product.price.toFixed(2) }}</span>
+                <span class="card-stock" [class.low]="product.stockQuantity < 10">
+                  {{ product.stockQuantity > 0 ? 'In Stock' : 'Out of Stock' }}
+                </span>
+              </div>
+            </div>
+          </a>
+        }
+      </div>
+    }
+  </section>
+</div>

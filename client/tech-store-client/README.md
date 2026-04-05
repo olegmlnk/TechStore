@@ -1,59 +1,78 @@
 # TechStoreClient
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.4.
+Frontend application for TechStore built on Angular CLI 21.
 
-## Development server
+## Main scripts
 
-To start a local development server, run:
-
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Use the npm scripts below from `client/tech-store-client`:
 
 ```bash
-ng generate component component-name
+npm run dev
+npm run build
+npm run preview
+npm run lint
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+- `npm run dev` starts the Angular development server on `http://localhost:4200/`.
+- `npm run build` creates a production bundle in `dist/tech-store-client/`.
+- `npm run preview` starts the built SSR artifact locally.
+- `npm run lint` runs ESLint for TypeScript and Angular templates.
+
+## Testing
+
+Unit and end-to-end tests are available through npm scripts:
 
 ```bash
-ng generate --help
+npm run test:unit
+npm run test:unit:coverage
+npm run test:e2e
 ```
 
-## Building
+## Environment status
 
-To build the project run:
+The application shows the current build mode in the footer:
 
-```bash
-ng build
-```
+- development mode displays `Development`
+- production build plus `npm run preview` displays `Production Mode`
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+This value is provided by Angular environment files:
 
-## Running unit tests
+- `src/environments/environment.ts`
+- `src/environments/environment.production.ts`
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## Build artifact snapshot
 
-```bash
-ng test
-```
+The current production build generates hashed browser assets such as:
 
-## Running end-to-end tests
+- `main-A4DALZSG.js`
+- `styles-EYE3NDYK.css`
+- `chunk-C6MVCWWG.js`
 
-For end-to-end (e2e) testing, run:
+Size comparison from the latest build:
 
-```bash
-ng e2e
-```
+- `src/`: `114767` bytes
+- `dist/`: `2577995` bytes
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+The larger `dist/` size is expected because it contains compiled browser bundles, SSR server bundles, and prerendered output.
 
-## Additional Resources
+## Notes for the lab
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- Local `.env` and `.env.production` files are kept outside Git and ignored by the repository.
+- The runtime environment status for the UI is intentionally implemented through Angular environments, not `import.meta.env`.
+- A short explanation for this decision is documented in [BUILD-SYSTEM-NOTE.md](./BUILD-SYSTEM-NOTE.md).
+
+## CI/CD and Vercel
+
+The repository includes a GitHub Actions workflow at `/.github/workflows/ci-cd.yml`.
+
+- On every push or pull request to `main` and `develop`, the pipeline installs dependencies, runs ESLint, runs unit tests, builds the Angular app, and uploads the build artifact.
+- On pushes to `develop`, the workflow deploys a preview build to Vercel.
+- On pushes to `main`, the workflow deploys a production build to Vercel.
+
+Before enabling deployment, add these repository secrets in GitHub:
+
+- `VERCEL_TOKEN`
+- `VERCEL_ORG_ID`
+- `VERCEL_PROJECT_ID`
+
+In the Vercel project settings, set the Root Directory to `client/tech-store-client`.

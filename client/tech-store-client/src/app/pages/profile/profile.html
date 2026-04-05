@@ -1,0 +1,63 @@
+<div class="profile-page">
+  @if (loading()) {
+    <div class="profile-skeleton">
+      <div class="skeleton-avatar"></div>
+      <div class="skeleton-bar large"></div>
+      <div class="skeleton-bar medium"></div>
+    </div>
+  } @else if (profile(); as p) {
+    <div class="profile-container">
+      <div class="profile-glow"></div>
+
+      <div class="profile-card">
+        <div class="avatar">
+          <span>{{ p.firstName.charAt(0) }}{{ p.lastName.charAt(0) }}</span>
+        </div>
+
+        @if (message()) {
+          <div class="success-banner">✓ {{ message() }}</div>
+        }
+
+        @if (editing()) {
+          <form (ngSubmit)="saveProfile()" class="edit-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="profile-first-name">First Name</label>
+                <input id="profile-first-name" [(ngModel)]="editForm.firstName" name="firstName" required />
+              </div>
+              <div class="form-group">
+                <label for="profile-last-name">Last Name</label>
+                <input id="profile-last-name" [(ngModel)]="editForm.lastName" name="lastName" required />
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="button" class="cancel-btn" (click)="cancelEdit()">Cancel</button>
+              <button type="submit" class="save-btn" [disabled]="saving()">
+                {{ saving() ? 'Saving...' : 'Save Changes' }}
+              </button>
+            </div>
+          </form>
+        } @else {
+          <h1>{{ p.firstName }} {{ p.lastName }}</h1>
+          <p class="email">{{ p.email }}</p>
+
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Member Since</span>
+              <span class="info-value">{{ p.createdAt | date:'mediumDate' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Email</span>
+              <span class="info-value">{{ p.email }}</span>
+            </div>
+          </div>
+
+          <div class="profile-actions">
+            <button class="edit-btn" (click)="startEdit()">✏️ Edit Profile</button>
+            <button class="logout-btn" (click)="logout()">🚪 Log Out</button>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

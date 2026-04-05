@@ -12,7 +12,7 @@ public class Product : BaseModel
     [MaxLength(4000)]
     public string Description { get; set; } = string.Empty;
 
-    [Range(typeof(decimal), "0.01", "79228162514264337593543950335")]
+    [Range(0.01, 1000000)]
     public decimal Price { get; set; }
 
     public bool IsAvailable { get; set; } = true;
@@ -21,4 +21,7 @@ public class Product : BaseModel
     public int StockQuantity { get; set; }
 
     public Category Category { get; set; }
+
+    [MaxLength(500)]
+    public string ImageUrl { get; set; } = string.Empty;
 }

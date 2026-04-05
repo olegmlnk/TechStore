@@ -18,8 +18,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-and-test:
-    name: Build and Test
+  frontend-build-and-test:
+    name: Frontend Build and Test
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -36,36 +36,78 @@ jobs:
           cache: npm
           cache-dependency-path: client/tech-store-client/package-lock.json
 
-      - name: Install dependencies
+      - name: Install frontend dependencies
         run: npm ci
 
-      - name: Run linter
+      - name: Run frontend linter
         run: npm run lint
 
-      - name: Run unit tests
+      - name: Run frontend unit tests
         run: npm run test:unit
 
-      - name: Build for production
+      - name: Build frontend for production
         run: npm run build
 
-      - name: Upload build artifacts
+      - name: Upload frontend build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: tech-store-client-dist
           path: client/tech-store-client/dist/tech-store-client
 
-  deploy-preview:
-    name: Deploy Preview to Vercel
+  backend-build:
+    name: Backend Build
     runs-on: ubuntu-latest
-    needs: build-and-test
+    defaults:
+      run:
+        working-directory: server/TechStore
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore backend dependencies
+        run: dotnet restore TechStore.sln
+
+      - name: Build backend
+        run: dotnet build TechStore.sln --configuration Release --no-restore
+
+      - name: Run backend tests when available
+        shell: bash
+        run: |
+          if find . -name '*Tests.csproj' -o -name '*Test*.csproj' | grep -q .; then
+            dotnet test TechStore.sln --configuration Release --no-build
+          else
+            echo "No backend test projects found. Skipping dotnet test."
+          fi
+
+      - name: Publish backend API
+        run: dotnet publish TechStore.API/TechStore.API.csproj --configuration Release --no-build --output ./publish/TechStore.API
+
+      - name: Upload backend publish artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: techstore-api-publish
+          path: server/TechStore/publish/TechStore.API
+
+  deploy-frontend-preview:
+    name: Deploy Frontend Preview to Vercel
+    runs-on: ubuntu-latest
+    needs: frontend-build-and-test
     if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
     environment: preview
     defaults:
       run:
         working-directory: client/tech-store-client
     env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      FRONTEND_API_URL: ${{ secrets.FRONTEND_API_URL }}
 
     steps:
       - name: Checkout repository
@@ -78,40 +120,67 @@ jobs:
           cache: npm
           cache-dependency-path: client/tech-store-client/package-lock.json
 
+      - name: Validate Vercel preview secrets
+        shell: bash
+        run: |
+          missing=0
+          for secret_name in VERCEL_TOKEN VERCEL_ORG_ID VERCEL_PROJECT_ID FRONTEND_API_URL; do
+            if [ -z "${!secret_name}" ]; then
+              echo "Missing required secret: $secret_name"
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            exit 1
+          fi
+
       - name: Install frontend dependencies
         run: npm ci
+
+      - name: Inject preview API URL into production frontend environment
+        shell: bash
+        run: |
+          cat <<EOF > src/environments/environment.production.ts
+          export const environment = {
+            production: true,
+            apiUrl: '${FRONTEND_API_URL}',
+            appStatus: 'Production Mode',
+          };
+          EOF
 
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
 
-      - name: Pull Vercel environment configuration
-        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Pull Vercel preview configuration
+        run: vercel pull --yes --environment=preview --token="$VERCEL_TOKEN"
 
-      - name: Build Vercel deployment
-        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Build Vercel preview deployment
+        run: vercel build --token="$VERCEL_TOKEN"
 
       - name: Deploy preview build
         id: deploy_preview
+        shell: bash
         run: |
-          $deploymentUrl = vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
-          "url=$deploymentUrl" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
-        shell: pwsh
+          deployment_url="$(vercel deploy --prebuilt --token="$VERCEL_TOKEN")"
+          echo "url=$deployment_url" >> "$GITHUB_OUTPUT"
 
       - name: Show preview deployment URL
         run: echo "Preview deployment URL - ${{ steps.deploy_preview.outputs.url }}"
 
-  deploy-production:
-    name: Deploy Production to Vercel
+  deploy-frontend-production:
+    name: Deploy Frontend Production to Vercel
     runs-on: ubuntu-latest
-    needs: build-and-test
+    needs: frontend-build-and-test
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     environment: production
     defaults:
       run:
         working-directory: client/tech-store-client
     env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      FRONTEND_API_URL: ${{ secrets.FRONTEND_API_URL }}
 
     steps:
       - name: Checkout repository
@@ -124,24 +193,87 @@ jobs:
           cache: npm
           cache-dependency-path: client/tech-store-client/package-lock.json
 
+      - name: Validate Vercel production secrets
+        shell: bash
+        run: |
+          missing=0
+          for secret_name in VERCEL_TOKEN VERCEL_ORG_ID VERCEL_PROJECT_ID FRONTEND_API_URL; do
+            if [ -z "${!secret_name}" ]; then
+              echo "Missing required secret: $secret_name"
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            exit 1
+          fi
+
       - name: Install frontend dependencies
         run: npm ci
+
+      - name: Inject production API URL into frontend environment
+        shell: bash
+        run: |
+          cat <<EOF > src/environments/environment.production.ts
+          export const environment = {
+            production: true,
+            apiUrl: '${FRONTEND_API_URL}',
+            appStatus: 'Production Mode',
+          };
+          EOF
 
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
 
       - name: Pull Vercel production configuration
-        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
 
       - name: Build Vercel production deployment
-        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel build --prod --token="$VERCEL_TOKEN"
 
       - name: Deploy production build
         id: deploy_production
+        shell: bash
         run: |
-          $deploymentUrl = vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
-          "url=$deploymentUrl" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
-        shell: pwsh
+          deployment_url="$(vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN")"
+          echo "url=$deployment_url" >> "$GITHUB_OUTPUT"
 
       - name: Show production deployment URL
         run: echo "Production deployment URL - ${{ steps.deploy_production.outputs.url }}"
+
+  deploy-backend-production:
+    name: Deploy Backend Production to Azure
+    runs-on: ubuntu-latest
+    needs: backend-build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    environment: production
+    env:
+      AZURE_WEBAPP_NAME: ${{ secrets.AZURE_WEBAPP_NAME }}
+      AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+
+    steps:
+      - name: Download backend publish artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: techstore-api-publish
+          path: techstore-api-publish
+
+      - name: Validate Azure deployment secrets
+        shell: bash
+        run: |
+          missing=0
+          for secret_name in AZURE_WEBAPP_NAME AZURE_WEBAPP_PUBLISH_PROFILE; do
+            if [ -z "${!secret_name}" ]; then
+              echo "Missing required secret: $secret_name"
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            exit 1
+          fi
+
+      - name: Deploy backend to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: ./techstore-api-publish

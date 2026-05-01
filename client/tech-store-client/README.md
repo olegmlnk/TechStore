@@ -65,14 +65,36 @@ The larger `dist/` size is expected because it contains compiled browser bundles
 
 The repository includes a GitHub Actions workflow at `/.github/workflows/ci-cd.yml`.
 
-- On every push or pull request to `main` and `develop`, the pipeline installs dependencies, runs ESLint, runs unit tests, builds the Angular app, and uploads the build artifact.
-- On pushes to `develop`, the workflow deploys a preview build to Vercel.
-- On pushes to `main`, the workflow deploys a production build to Vercel.
+- On every push or pull request to `main` and `develop`, the pipeline builds and validates both frontend and backend.
+- On pushes to `develop`, the workflow deploys the Angular frontend to Vercel Preview.
+- On pushes to `main`, the workflow deploys the Angular frontend to Vercel Production and the ASP.NET backend to Azure App Service.
 
-Before enabling deployment, add these repository secrets in GitHub:
+For the frontend deployment, add these GitHub secrets:
 
 - `VERCEL_TOKEN`
 - `VERCEL_ORG_ID`
 - `VERCEL_PROJECT_ID`
+- `FRONTEND_API_URL`
 
 In the Vercel project settings, set the Root Directory to `client/tech-store-client`.
+
+Use GitHub Environment secrets if you want different API URLs for preview and production:
+
+- `preview` environment: point `FRONTEND_API_URL` to your Azure staging API or current production API
+- `production` environment: point `FRONTEND_API_URL` to your production Azure API
+
+For the backend deployment, add these GitHub secrets:
+
+- `AZURE_WEBAPP_NAME`
+- `AZURE_WEBAPP_PUBLISH_PROFILE`
+
+In Azure App Service, also configure runtime application settings for the API:
+
+- `ConnectionStrings__DefaultConnection`
+- `Jwt__Key`
+- `Jwt__Issuer`
+- `Jwt__Audience`
+- `Cors__AllowedOrigins__0`
+- `Cors__AllowedOrigins__1`
+
+At least one CORS origin should match your deployed Vercel frontend URL.

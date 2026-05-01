@@ -1,5 +1,9 @@
 # TechStore
 
+[![CI/CD Pipeline](https://img.shields.io/github/actions/workflow/status/olegmlnk/TechStore/ci-cd.yml?branch=main&label=CI%2FCD%20Pipeline)](https://github.com/olegmlnk/TechStore/actions/workflows/ci-cd.yml)
+
+**Live demo:** [tech-store-theta-three.vercel.app](https://tech-store-theta-three.vercel.app/)
+
 TechStore - це MVP онлайн-магазину техніки з поділом на `client` (Angular) і `server` (ASP.NET Core + EF Core).
 
 ## Ідея MVP

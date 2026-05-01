@@ -38,6 +38,7 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 10.0.x
+          dotnet-quality: preview
 
       - name: Backend CI
         working-directory: server/TechStore
@@ -61,8 +62,6 @@ jobs:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
       FRONTEND_API_URL: ${{ secrets.FRONTEND_API_URL }}
-      AZURE_WEBAPP_NAME: ${{ secrets.AZURE_WEBAPP_NAME }}
-      AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
 
     steps:
       - uses: actions/checkout@v4
@@ -70,7 +69,7 @@ jobs:
       - name: Check secrets
         shell: bash
         run: |
-          for name in VERCEL_TOKEN VERCEL_ORG_ID VERCEL_PROJECT_ID FRONTEND_API_URL AZURE_WEBAPP_NAME AZURE_WEBAPP_PUBLISH_PROFILE; do
+          for name in VERCEL_TOKEN VERCEL_ORG_ID VERCEL_PROJECT_ID FRONTEND_API_URL; do
             [ -n "${!name}" ] || { echo "Missing secret: $name"; exit 1; }
           done
 
@@ -96,14 +95,3 @@ jobs:
           vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
           vercel build --prod --token="$VERCEL_TOKEN"
           vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: backend-publish
-          path: backend-publish
-
-      - uses: azure/webapps-deploy@v3
-        with:
-          app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: ./backend-publish

@@ -6,6 +6,8 @@ export const routes: Routes = [
   { path: '', loadComponent: () => import('./pages/home/home').then(m => m.HomePage) },
   { path: 'auth', loadComponent: () => import('./pages/auth/auth').then(m => m.AuthPage) },
   { path: 'product/:id', loadComponent: () => import('./pages/product/product').then(m => m.ProductPage) },
+  { path: 'checkout', loadComponent: () => import('./pages/checkout/checkout').then(m => m.CheckoutPage), canActivate: [authGuard] },
+  { path: 'order-confirmation/:id', loadComponent: () => import('./pages/order-confirmation/order-confirmation').then(m => m.OrderConfirmationPage), canActivate: [authGuard] },
   { path: 'profile', loadComponent: () => import('./pages/profile/profile').then(m => m.ProfilePage), canActivate: [authGuard] },
   { path: 'admin', loadComponent: () => import('./pages/admin/admin').then(m => m.AdminPage), canActivate: [authGuard, adminGuard] },
   { path: '**', redirectTo: '' }

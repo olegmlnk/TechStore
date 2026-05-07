@@ -1,0 +1,98 @@
+<section class="checkout-page">
+  <header class="checkout-header">
+    <h1>Checkout</h1>
+    <p class="subtitle">Complete your order</p>
+  </header>
+
+  <div class="checkout-grid">
+    <form #form="ngForm" class="checkout-form" (ngSubmit)="submit(form)" novalidate>
+      <fieldset>
+        <legend>Contact details</legend>
+
+        <label class="form-field">
+          <span>Full name</span>
+          <input
+            type="text"
+            name="fullName"
+            required
+            minlength="2"
+            [ngModel]="fullName()"
+            (ngModelChange)="fullName.set($event)"
+            data-testid="checkout-name"
+          />
+        </label>
+
+        <label class="form-field">
+          <span>Email</span>
+          <input
+            type="email"
+            name="email"
+            required
+            email
+            [ngModel]="email()"
+            (ngModelChange)="email.set($event)"
+            data-testid="checkout-email"
+          />
+        </label>
+
+        <label class="form-field">
+          <span>Shipping address</span>
+          <textarea
+            name="address"
+            required
+            minlength="5"
+            rows="3"
+            [ngModel]="address()"
+            (ngModelChange)="address.set($event)"
+            data-testid="checkout-address"
+          ></textarea>
+        </label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Payment method</legend>
+        <label class="payment-option">
+          <input
+            type="radio"
+            name="paymentMethod"
+            value="card"
+            [ngModel]="paymentMethod()"
+            (ngModelChange)="paymentMethod.set($event)"
+          />
+          <span>Card</span>
+        </label>
+        <label class="payment-option">
+          <input
+            type="radio"
+            name="paymentMethod"
+            value="cash"
+            [ngModel]="paymentMethod()"
+            (ngModelChange)="paymentMethod.set($event)"
+          />
+          <span>Cash on delivery</span>
+        </label>
+      </fieldset>
+
+      <button
+        type="submit"
+        class="confirm-btn"
+        [disabled]="form.invalid || submitting()"
+        data-testid="checkout-confirm"
+      >
+        Підтвердити замовлення
+      </button>
+    </form>
+
+    <aside class="order-summary">
+      <h2>Order summary</h2>
+      <div class="summary-row">
+        <span>Items</span>
+        <span data-testid="checkout-items-count">{{ itemsCount() }}</span>
+      </div>
+      <div class="summary-row total">
+        <span>Total</span>
+        <span data-testid="checkout-total">${{ cartTotal().toFixed(2) }}</span>
+      </div>
+    </aside>
+  </div>
+</section>

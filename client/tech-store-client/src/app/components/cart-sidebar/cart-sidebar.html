@@ -81,7 +81,15 @@
       
       <div class="footer-buttons">
         <button class="clear-btn" (click)="clearCart()" data-testid="cart-clear">Clear Cart</button>
-        <button class="checkout-btn">Checkout 🚀</button>
+        @if (showNewCta()) {
+          <button class="cta-button-new" (click)="proceedToCheckout()" data-testid="cart-checkout">
+            Оформити замовлення →
+          </button>
+        } @else {
+          <button class="cta-button-old" (click)="proceedToCheckout()" data-testid="cart-checkout">
+            Оформити замовлення
+          </button>
+        }
       </div>
     </div>
   }

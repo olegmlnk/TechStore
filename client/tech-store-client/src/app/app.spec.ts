@@ -2,6 +2,7 @@ import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { App } from './app';
+import { AnalyticsService } from './services/analytics.service';
 import { AuthService } from './services/auth.service';
 import { CartService } from './services/cart.service';
 
@@ -23,6 +24,16 @@ describe('App', () => {
     clearCart: vi.fn(),
   };
 
+  const analyticsServiceMock = {
+    init: vi.fn(),
+    capture: vi.fn(),
+    identify: vi.fn(),
+    setPersonProperties: vi.fn(),
+    isFeatureEnabled: vi.fn(() => false),
+    onFeatureFlagsLoaded: vi.fn(),
+    reset: vi.fn(),
+  };
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [App],
@@ -30,6 +41,7 @@ describe('App', () => {
         provideRouter([]),
         { provide: AuthService, useValue: authServiceMock },
         { provide: CartService, useValue: cartServiceMock },
+        { provide: AnalyticsService, useValue: analyticsServiceMock },
       ],
     }).compileComponents();
   });

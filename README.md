@@ -76,3 +76,47 @@ npm start
 Frontend буде доступний на `http://localhost:4200`.
 
 > Якщо в PowerShell блокується `npm` через Execution Policy, використовуй `npm.cmd install` і `npm.cmd start`.
+
+## Analytics (PostHog)
+
+Клієнт інтегрований із PostHog для збору продуктових подій, побудови воронки конверсії, запису сесій та A/B-тестів через Feature Flags.
+
+### Які події збираються
+
+| Подія | Де викликається | Властивості |
+| --- | --- | --- |
+| `$pageview` | `AppComponent` на `Router.NavigationEnd` | `path` |
+| `product_viewed` | `ProductPage.ngOnInit` після завантаження товару | `product_id`, `product_name`, `category`, `price`, `in_stock` |
+| `added_to_cart` | `ProductPage.addToCart` | `product_id`, `product_name`, `price`, `quantity`, `cart_total_items` |
+| `removed_from_cart` | `CartSidebarComponent.removeItem` | `product_id`, `product_name` |
+| `checkout_started` | `CartSidebarComponent.proceedToCheckout` | `cart_total_value`, `items_count`, `cta_variant` |
+| `purchase_completed` | `CheckoutPage.submit` | `order_id`, `total_value`, `items_count`, `payment_method` |
+
+Користувача ідентифікуємо через `analytics.identify(userId, { email, name, role })` після успішного логіну, і скидаємо через `analytics.reset()` на логауті.
+
+### A/B-тест `new-checkout-cta`
+
+У сайдбарі кошика рендериться один із двох варіантів CTA-кнопки залежно від PostHog Feature Flag `new-checkout-cta`:
+
+- `cta-button-old` — стандартна нейтральна кнопка;
+- `cta-button-new` — яскравий рожево-фіолетовий градієнт зі збільшеним padding та `position: sticky` на мобільних.
+
+Обидва варіанти емітять подію `checkout_started` з властивістю `cta_variant: 'old' | 'new'`, що дозволяє в PostHog порівняти конверсію між варіантами.
+
+### Налаштування ключа
+
+PostHog ключ та хост приходять із Angular environment files:
+
+- `client/tech-store-client/src/environments/environment.ts` — для `development`;
+- `client/tech-store-client/src/environments/environment.production.ts` — для `production` (підставляється в `angular.json` `fileReplacements`).
+
+Реальні `phc_*` (project) ключі вже зашиті в обидва environment-файли — вони безпечні для коміту, бо це write-only ключі для browser SDK. Хост — `https://us.i.posthog.com` (US-регіон).
+
+### SSR-безпека
+
+`AnalyticsService` усі публічні методи (`init`, `capture`, `identify`, `setPersonProperties`, `isFeatureEnabled`, `onFeatureFlagsLoaded`, `reset`) обгортає `isPlatformBrowser(this.platformId)` — на сервері виклики стають no-op, тому prerender не торкається `window`/`document`.
+
+### Дашборд
+
+PostHog проєкт: [us.posthog.com/project/414958](https://us.posthog.com/project/414958)
+Funnel dashboard: [us.posthog.com/project/414958/dashboard/1559320](https://us.posthog.com/project/414958/dashboard/1559320)

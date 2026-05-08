@@ -110,7 +110,7 @@ PostHog ключ та хост приходять із Angular environment files
 - `client/tech-store-client/src/environments/environment.ts` — для `development`;
 - `client/tech-store-client/src/environments/environment.production.ts` — для `production` (підставляється в `angular.json` `fileReplacements`).
 
-У плейсхолдері стоїть `phc_PLACEHOLDER_REPLACE_WITH_REAL_KEY`. Для деплою на Vercel реальний ключ слід задати у **Project Settings → Environment Variables** і пересобрати клієнт. Хост за замовчуванням — `https://eu.i.posthog.com`.
+Реальні `phc_*` (project) ключі вже зашиті в обидва environment-файли — вони безпечні для коміту, бо це write-only ключі для browser SDK. Хост — `https://us.i.posthog.com` (US-регіон).
 
 ### SSR-безпека
 
@@ -118,4 +118,5 @@ PostHog ключ та хост приходять із Angular environment files
 
 ### Дашборд
 
-PostHog dashboard: _TBD_ (буде заповнено після створення проєкту в PostHog UI).
+PostHog проєкт: [us.posthog.com/project/414958](https://us.posthog.com/project/414958)
+Funnel dashboard: [us.posthog.com/project/414958/dashboard/1559320](https://us.posthog.com/project/414958/dashboard/1559320)

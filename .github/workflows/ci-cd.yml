@@ -41,7 +41,7 @@ jobs:
         run: |
           cd client/tech-store-client
           npx sentry-cli sourcemaps inject ./dist/tech-store-client/browser
-          npx sentry-cli sourcemaps upload --org YOUR_ORG --project techstore ./dist/tech-store-client/browser
+          npx sentry-cli sourcemaps upload --org olegmelnyk --project techstore ./dist/tech-store-client/browser
 
       - uses: actions/upload-artifact@v4
         with:

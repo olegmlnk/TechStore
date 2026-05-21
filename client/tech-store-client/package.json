@@ -17,7 +17,7 @@
     "test:e2e:ui": "playwright test --ui",
     "serve:ssr:tech-store-client": "node dist/tech-store-client/server/server.mjs",
     "lint": "ng lint",
-    "sentry:sourcemaps": "sentry-cli sourcemaps inject ./dist/tech-store-client/browser && sentry-cli sourcemaps upload --org YOUR_ORG --project techstore ./dist/tech-store-client/browser"
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject ./dist/tech-store-client/browser && sentry-cli sourcemaps upload --org olegmelnyk --project techstore ./dist/tech-store-client/browser"
   },
   "private": true,
   "packageManager": "npm@10.9.4",

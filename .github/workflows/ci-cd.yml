@@ -30,6 +30,20 @@ jobs:
           npm run test:unit
           npm run build
 
+      # Lab 6: ship readable stack traces. Needs the SENTRY_AUTH_TOKEN secret;
+      # use an Organization Auth Token (sntrys_...) so sentry-cli auto-targets
+      # the right Sentry region (this project is on EU / de.sentry.io).
+      # continue-on-error keeps CI green until the token is configured.
+      - name: Upload source maps to Sentry
+        if: github.ref == 'refs/heads/main'
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        continue-on-error: true
+        run: |
+          cd client/tech-store-client
+          npx sentry-cli sourcemaps inject ./dist/tech-store-client/browser
+          npx sentry-cli sourcemaps upload --org olegmelnyk --project techstore ./dist/tech-store-client/browser
+
       - uses: actions/upload-artifact@v4
         with:
           name: frontend-dist
@@ -62,6 +76,13 @@ jobs:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
       FRONTEND_API_URL: ${{ secrets.FRONTEND_API_URL }}
+      # Add these in GitHub -> Settings -> Secrets and variables -> Actions:
+      #   POSTHOG_KEY  = phc_... (project key, same as src/environments/environment.production.ts)
+      #   POSTHOG_HOST = https://us.i.posthog.com
+      #   SENTRY_DSN   = https://...ingest.us.sentry.io/... (optional; empty disables Sentry)
+      POSTHOG_KEY: ${{ secrets.POSTHOG_KEY }}
+      POSTHOG_HOST: ${{ secrets.POSTHOG_HOST }}
+      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
 
     steps:
       - uses: actions/checkout@v4
@@ -69,7 +90,7 @@ jobs:
       - name: Check secrets
         shell: bash
         run: |
-          for name in VERCEL_TOKEN VERCEL_ORG_ID VERCEL_PROJECT_ID FRONTEND_API_URL; do
+          for name in VERCEL_TOKEN VERCEL_ORG_ID VERCEL_PROJECT_ID FRONTEND_API_URL POSTHOG_KEY POSTHOG_HOST; do
             [ -n "${!name}" ] || { echo "Missing secret: $name"; exit 1; }
           done
 
@@ -89,6 +110,9 @@ jobs:
             production: true,
             apiUrl: '${FRONTEND_API_URL}',
             appStatus: 'Production Mode',
+            posthogKey: '${POSTHOG_KEY}',
+            posthogHost: '${POSTHOG_HOST}',
+            sentryDsn: '${SENTRY_DSN}',
           };
           EOF
           npm install --global vercel@latest

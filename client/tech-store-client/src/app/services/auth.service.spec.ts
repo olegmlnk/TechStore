@@ -5,16 +5,54 @@
   import { Router } from '@angular/router';
   import { environment } from '../../environments/environment';
   import { AuthResponse, LoginRequest } from '../models/auth.model';
+  import { AnalyticsService } from './analytics.service';
+  import { ErrorTrackingService } from './error-tracking.service';
   import { AuthService } from './auth.service';
 
   describe('AuthService', () => {
     let httpTesting: HttpTestingController;
     let routerMock: { navigate: ReturnType<typeof vi.fn> };
+    let analyticsMock: {
+      init: ReturnType<typeof vi.fn>;
+      capture: ReturnType<typeof vi.fn>;
+      identify: ReturnType<typeof vi.fn>;
+      setPersonProperties: ReturnType<typeof vi.fn>;
+      isFeatureEnabled: ReturnType<typeof vi.fn>;
+      onFeatureFlagsLoaded: ReturnType<typeof vi.fn>;
+      reset: ReturnType<typeof vi.fn>;
+    };
+    let errorTrackingMock: {
+      init: ReturnType<typeof vi.fn>;
+      setUser: ReturnType<typeof vi.fn>;
+      clearUser: ReturnType<typeof vi.fn>;
+      captureException: ReturnType<typeof vi.fn>;
+      captureMessage: ReturnType<typeof vi.fn>;
+      addBreadcrumb: ReturnType<typeof vi.fn>;
+      setTag: ReturnType<typeof vi.fn>;
+    };
 
     beforeEach(() => {
       localStorage.clear();
       routerMock = {
         navigate: vi.fn(() => Promise.resolve(true)),
+      };
+      analyticsMock = {
+        init: vi.fn(),
+        capture: vi.fn(),
+        identify: vi.fn(),
+        setPersonProperties: vi.fn(),
+        isFeatureEnabled: vi.fn(() => false),
+        onFeatureFlagsLoaded: vi.fn(),
+        reset: vi.fn(),
+      };
+      errorTrackingMock = {
+        init: vi.fn(),
+        setUser: vi.fn(),
+        clearUser: vi.fn(),
+        captureException: vi.fn(),
+        captureMessage: vi.fn(),
+        addBreadcrumb: vi.fn(),
+        setTag: vi.fn(),
       };
 
       TestBed.configureTestingModule({
@@ -23,6 +61,8 @@
           provideHttpClientTesting(),
           { provide: Router, useValue: routerMock },
           { provide: PLATFORM_ID, useValue: 'browser' },
+          { provide: AnalyticsService, useValue: analyticsMock },
+          { provide: ErrorTrackingService, useValue: errorTrackingMock },
         ],
       });
 

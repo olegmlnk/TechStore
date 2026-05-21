@@ -5,12 +5,16 @@ import { Router } from '@angular/router';
 import { tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { AuthResponse, LoginRequest, RegisterRequest, UserProfile, UpdateProfileRequest } from '../models/auth.model';
+import { AnalyticsService } from './analytics.service';
+import { ErrorTrackingService } from './error-tracking.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
+  private analytics = inject(AnalyticsService);
+  private errorTracking = inject(ErrorTrackingService);
 
   private readonly TOKEN_KEY = 'techstore_token';
   private readonly USER_KEY = 'techstore_user';
@@ -35,6 +39,8 @@ export class AuthService {
       localStorage.removeItem(this.USER_KEY);
     }
     this.currentUser.set(null);
+    this.analytics.reset();
+    this.errorTracking.clearUser();
     this.router.navigate(['/']);
   }
 
@@ -59,6 +65,16 @@ export class AuthService {
       localStorage.setItem(this.USER_KEY, JSON.stringify(res));
     }
     this.currentUser.set(res);
+    this.analytics.identify(res.userId, {
+      email: res.email,
+      name: `${res.firstName} ${res.lastName}`.trim(),
+      role: res.role,
+    });
+    this.errorTracking.setUser({
+      id: res.userId,
+      email: res.email,
+      username: `${res.firstName} ${res.lastName}`.trim(),
+    });
   }
 
   private loadUser(): AuthResponse | null {

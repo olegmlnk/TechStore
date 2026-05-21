@@ -308,21 +308,46 @@
     gap: 0.75rem;
   }
 
-  .checkout-btn {
+  .cta-button-old {
     width: 100%;
-    background: linear-gradient(135deg, #00d4ff, #7b2ff7);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: #fff;
+    padding: 0.85rem 1rem;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+  }
+
+  .cta-button-new {
+    width: 100%;
+    background: linear-gradient(135deg, #ff3d7f, #7b2ff7);
     color: white;
     border: none;
-    padding: 1rem;
-    border-radius: 12px;
-    font-size: 1.05rem;
-    font-weight: 700;
+    padding: 1.25rem;
+    border-radius: 14px;
+    font-size: 1.15rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
     cursor: pointer;
     transition: all 0.3s;
+    box-shadow: 0 8px 24px rgba(255, 61, 127, 0.35);
 
     &:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(123, 47, 247, 0.4);
+      box-shadow: 0 12px 28px rgba(255, 61, 127, 0.5);
+    }
+
+    @media (max-width: 600px) {
+      position: sticky;
+      bottom: 0;
+      z-index: 2;
     }
   }
 

@@ -6,6 +6,7 @@ import { tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { AuthResponse, LoginRequest, RegisterRequest, UserProfile, UpdateProfileRequest } from '../models/auth.model';
 import { AnalyticsService } from './analytics.service';
+import { ErrorTrackingService } from './error-tracking.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -13,6 +14,7 @@ export class AuthService {
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
   private analytics = inject(AnalyticsService);
+  private errorTracking = inject(ErrorTrackingService);
 
   private readonly TOKEN_KEY = 'techstore_token';
   private readonly USER_KEY = 'techstore_user';
@@ -38,6 +40,7 @@ export class AuthService {
     }
     this.currentUser.set(null);
     this.analytics.reset();
+    this.errorTracking.clearUser();
     this.router.navigate(['/']);
   }
 
@@ -66,6 +69,11 @@ export class AuthService {
       email: res.email,
       name: `${res.firstName} ${res.lastName}`.trim(),
       role: res.role,
+    });
+    this.errorTracking.setUser({
+      id: res.userId,
+      email: res.email,
+      username: `${res.firstName} ${res.lastName}`.trim(),
     });
   }
 

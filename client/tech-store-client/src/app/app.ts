@@ -3,6 +3,9 @@ import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
 import { NavbarComponent } from './components/navbar/navbar';
 import { CartSidebarComponent } from './components/cart-sidebar/cart-sidebar';
+// TODO Lab 6: remove ErrorTestComponent (import + <app-error-test /> in app.html)
+// after Sentry verification screenshots are taken. The component file is kept.
+import { ErrorTestComponent } from './components/error-test/error-test.component';
 import { AnalyticsService } from './services/analytics.service';
 import { ErrorTrackingService } from './services/error-tracking.service';
 import { environment } from '../environments/environment';
@@ -10,7 +13,7 @@ import { environment } from '../environments/environment';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NavbarComponent, CartSidebarComponent],
+  imports: [RouterOutlet, NavbarComponent, CartSidebarComponent, ErrorTestComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })

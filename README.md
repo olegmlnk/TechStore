@@ -120,3 +120,47 @@ PostHog ключ та хост приходять із Angular environment files
 
 PostHog проєкт: [us.posthog.com/project/414958](https://us.posthog.com/project/414958)
 Funnel dashboard: [us.posthog.com/project/414958/dashboard/1559320](https://us.posthog.com/project/414958/dashboard/1559320)
+
+## Sentry (Lab 6)
+
+### Setup
+
+1. Create project on https://sentry.io (platform: Angular).
+2. Copy DSN to `SENTRY_DSN` env var (locally to `.env`, in Vercel to project Environment Variables, in GitHub to repository Secrets).
+3. Generate auth token for source maps: Settings → Account → Auth Tokens → Create Token with `project:releases` scope. Add as `SENTRY_AUTH_TOKEN` to GitHub Secrets.
+4. Replace `YOUR_ORG` with your Sentry org slug in two places: `client/tech-store-client/package.json` (`sentry:sourcemaps` script) and `.github/workflows/ci-cd.yml` (Upload source maps step).
+
+### Tracked events
+- All unhandled exceptions in Angular components (via `Sentry.createErrorHandler` registered as Angular `ErrorHandler` in `app.config.ts`)
+- HTTP errors and routing performance via `browserTracingIntegration` (`TraceService`)
+- User session replays on errors (`replayIntegration`, inputs masked)
+
+### Manual breadcrumbs
+- Cart operations (`added_to_cart` in `pages/product`)
+- Checkout flow (`Checkout submit initiated` in `pages/checkout`)
+- Test widget actions (`ErrorTestComponent`)
+
+### User context
+`ErrorTrackingService.setUser({ id, email, username })` is called after a successful login (next to PostHog `identify`), and `clearUser()` on logout (next to PostHog `reset`).
+
+### SSR safety & DSN gating
+`ErrorTrackingService` guards every public method with `isPlatformBrowser`, so calls are no-ops during prerender. When `environment.sentryDsn` is empty the SDK is not initialized (a warning is logged), so local dev without a DSN keeps working.
+
+### Source maps
+Production builds emit hidden source maps (`angular.json` → `sourceMap: { scripts: true, hidden: true }`). On pushes to `main`, CI runs `sentry-cli sourcemaps inject` + `upload` so Sentry shows original (non-minified) stack traces.
+
+### Verification
+A temporary `ErrorTestComponent` renders two floating buttons (bottom-right):
+- **🔥 Break the world** — throws an unhandled `Error` routed to Sentry via the global `ErrorHandler`.
+- **⚠️ Send warning to Sentry** — sends a captured message at `warning` level.
+
+Remove `<app-error-test />` from `app.html` (and the import in `app.ts`) after verification screenshots are taken.
+
+### Alert Rule (configure via Sentry UI)
+- Navigate to Alerts → Create Alert Rule
+- Condition: "When count of events is more than 5 in 1 minute"
+- Action: Send email notification
+- Save as "High error rate"
+
+### Dashboard
+Production dashboard: [add link after deployment]

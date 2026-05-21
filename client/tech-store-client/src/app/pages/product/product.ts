@@ -5,6 +5,7 @@ import { ProductService } from '../../services/product.service';
 import { AuthService } from '../../services/auth.service';
 import { CartService } from '../../services/cart.service';
 import { AnalyticsService } from '../../services/analytics.service';
+import { ErrorTrackingService } from '../../services/error-tracking.service';
 import { Product } from '../../models/product.model';
 
 @Component({
@@ -19,6 +20,7 @@ export class ProductPage implements OnInit {
   private productService = inject(ProductService);
   private cartService = inject(CartService);
   private analytics = inject(AnalyticsService);
+  private errorTracking = inject(ErrorTrackingService);
   authService = inject(AuthService);
 
   product = signal<Product | null>(null);
@@ -74,6 +76,12 @@ export class ProductPage implements OnInit {
         price: product.price,
         quantity: qty,
         cart_total_items: this.cartService.itemCount() + qty,
+      });
+      this.errorTracking.addBreadcrumb({
+        category: 'commerce',
+        message: 'User added product to cart',
+        level: 'info',
+        data: { product_id: product.id, product_name: product.title },
       });
     }
 

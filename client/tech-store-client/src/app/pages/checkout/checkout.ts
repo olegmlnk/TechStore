@@ -4,6 +4,7 @@ import { PLATFORM_ID } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AnalyticsService } from '../../services/analytics.service';
+import { ErrorTrackingService } from '../../services/error-tracking.service';
 import { CartService } from '../../services/cart.service';
 
 @Component({
@@ -17,6 +18,7 @@ export class CheckoutPage implements OnInit {
   private router = inject(Router);
   private cartService = inject(CartService);
   private analytics = inject(AnalyticsService);
+  private errorTracking = inject(ErrorTrackingService);
   private platformId = inject(PLATFORM_ID);
 
   fullName = signal('');
@@ -48,6 +50,13 @@ export class CheckoutPage implements OnInit {
     const items = cart?.items ?? [];
     const total = cart?.totalPrice ?? 0;
     const orderId = this.generateOrderId();
+
+    this.errorTracking.addBreadcrumb({
+      category: 'commerce',
+      message: 'Checkout submit initiated',
+      level: 'info',
+      data: { items_count: items.length },
+    });
 
     this.analytics.capture('purchase_completed', {
       order_id: orderId,

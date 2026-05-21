@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { App } from './app';
 import { AnalyticsService } from './services/analytics.service';
+import { ErrorTrackingService } from './services/error-tracking.service';
 import { AuthService } from './services/auth.service';
 import { CartService } from './services/cart.service';
 
@@ -34,6 +35,16 @@ describe('App', () => {
     reset: vi.fn(),
   };
 
+  const errorTrackingServiceMock = {
+    init: vi.fn(),
+    setUser: vi.fn(),
+    clearUser: vi.fn(),
+    captureException: vi.fn(),
+    captureMessage: vi.fn(),
+    addBreadcrumb: vi.fn(),
+    setTag: vi.fn(),
+  };
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [App],
@@ -42,6 +53,7 @@ describe('App', () => {
         { provide: AuthService, useValue: authServiceMock },
         { provide: CartService, useValue: cartServiceMock },
         { provide: AnalyticsService, useValue: analyticsServiceMock },
+        { provide: ErrorTrackingService, useValue: errorTrackingServiceMock },
       ],
     }).compileComponents();
   });

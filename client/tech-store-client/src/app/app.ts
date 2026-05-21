@@ -4,6 +4,7 @@ import { filter } from 'rxjs';
 import { NavbarComponent } from './components/navbar/navbar';
 import { CartSidebarComponent } from './components/cart-sidebar/cart-sidebar';
 import { AnalyticsService } from './services/analytics.service';
+import { ErrorTrackingService } from './services/error-tracking.service';
 import { environment } from '../environments/environment';
 
 @Component({
@@ -16,10 +17,13 @@ import { environment } from '../environments/environment';
 export class App implements OnInit {
   readonly appStatus = environment.appStatus;
   private analytics = inject(AnalyticsService);
+  private errorTracking = inject(ErrorTrackingService);
   private router = inject(Router);
 
   ngOnInit(): void {
     this.analytics.init();
+    // Order matters: Sentry after PostHog so error breadcrumbs can reference analytics state.
+    this.errorTracking.init();
 
     this.router.events
       .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))

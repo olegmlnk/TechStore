@@ -127,8 +127,8 @@ Funnel dashboard: [us.posthog.com/project/414958/dashboard/1559320](https://us.p
 
 1. Create project on https://sentry.io (platform: Angular).
 2. Copy DSN to `SENTRY_DSN` env var (locally to `.env`, in Vercel to project Environment Variables, in GitHub to repository Secrets).
-3. Generate auth token for source maps: Settings → Account → Auth Tokens → Create Token with `project:releases` scope. Add as `SENTRY_AUTH_TOKEN` to GitHub Secrets.
-4. Replace `YOUR_ORG` with your Sentry org slug in two places: `client/tech-store-client/package.json` (`sentry:sourcemaps` script) and `.github/workflows/ci-cd.yml` (Upload source maps step).
+3. Generate an auth token for source maps via **Organization Auth Tokens**: `https://<org>.sentry.io/settings/auth-tokens/` → **Create New Token**. Organization tokens already carry the scopes needed for upload (`project:releases`, `project:write`, `org:read`). Copy the `sntrys_…` value (shown only once) and add it as `SENTRY_AUTH_TOKEN` to GitHub Secrets. _Fallback:_ a personal token at `https://sentry.io/settings/account/api/auth-tokens/` with the `project:releases` scope.
+4. The Sentry org slug is set to `olegmelnyk` in `client/tech-store-client/package.json` (`sentry:sourcemaps` script) and `.github/workflows/ci-cd.yml` (Upload source maps step). Change it if you fork the project.
 
 ### Tracked events
 - All unhandled exceptions in Angular components (via `Sentry.createErrorHandler` registered as Angular `ErrorHandler` in `app.config.ts`)

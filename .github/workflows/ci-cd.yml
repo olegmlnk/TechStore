@@ -101,11 +101,13 @@ jobs:
           cache-dependency-path: client/tech-store-client/package-lock.json
 
       - name: Deploy frontend to Vercel
-        working-directory: client/tech-store-client
         shell: bash
         run: |
-          npm ci
-          cat <<EOF > src/environments/environment.production.ts
+          # Run Vercel from the repo root so the project's Root Directory
+          # (client/tech-store-client) resolves correctly. Running from inside
+          # that folder double-nests the path and breaks `vercel build`
+          # (spawn sh ENOENT). vercel build runs its own install, so no npm ci.
+          cat > client/tech-store-client/src/environments/environment.production.ts <<EOF
           export const environment = {
             production: true,
             apiUrl: '${FRONTEND_API_URL}',

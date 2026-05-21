@@ -16,7 +16,8 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "serve:ssr:tech-store-client": "node dist/tech-store-client/server/server.mjs",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject ./dist/tech-store-client/browser && sentry-cli sourcemaps upload --org YOUR_ORG --project techstore ./dist/tech-store-client/browser"
   },
   "private": true,
   "packageManager": "npm@10.9.4",
@@ -41,6 +42,7 @@
     "@angular/compiler-cli": "^21.1.0",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.55.0",
+    "@sentry/cli": "^3.4.3",
     "@types/express": "^5.0.1",
     "@types/node": "^20.17.19",
     "@vitest/coverage-v8": "^4.0.8",

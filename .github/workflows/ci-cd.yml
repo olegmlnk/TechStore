@@ -30,6 +30,19 @@ jobs:
           npm run test:unit
           npm run build
 
+      # Lab 6: ship readable stack traces. Requires SENTRY_AUTH_TOKEN secret
+      # (scope: project:releases) and replacing YOUR_ORG below with the Sentry
+      # org slug. continue-on-error keeps CI green until those are configured.
+      - name: Upload source maps to Sentry
+        if: github.ref == 'refs/heads/main'
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        continue-on-error: true
+        run: |
+          cd client/tech-store-client
+          npx sentry-cli sourcemaps inject ./dist/tech-store-client/browser
+          npx sentry-cli sourcemaps upload --org YOUR_ORG --project techstore ./dist/tech-store-client/browser
+
       - uses: actions/upload-artifact@v4
         with:
           name: frontend-dist
